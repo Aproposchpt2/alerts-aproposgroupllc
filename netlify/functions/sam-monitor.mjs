@@ -15,8 +15,8 @@ const NAICS_CODES = (process.env.NAICS_CODES ||
   "541512,541519,541511,518210,561421,561499")
   .split(",").map((s) => s.trim()).filter(Boolean);
 
-// 30-day backfill run — will be reverted to 2 after first trigger.
-const LOOKBACK_DAYS = parseInt(process.env.LOOKBACK_DAYS || "30", 10);
+// How many days back to scan each run. 2 covers weekends / a missed run.
+const LOOKBACK_DAYS = parseInt(process.env.LOOKBACK_DAYS || "2", 10);
 
 // Max records per page (API ceiling is 1000).
 const PAGE_LIMIT = 1000;
@@ -94,10 +94,13 @@ async function fetchOppsForNaics(naics, postedFrom, postedTo) {
 // Supabase (PostgREST) — dedupe + insert via service-role key
 // ---------------------------------------------------------------------------
 
+const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY ||
+                     process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+
 function sbHeaders(extra = {}) {
   return {
-    apikey: process.env.SUPABASE_SERVICE_KEY,
-    Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`,
+    apikey: SUPABASE_KEY,
+    Authorization: `Bearer ${SUPABASE_KEY}`,
     ...extra,
   };
 }
@@ -193,8 +196,9 @@ async function sendDigest(opps) {
 // ---------------------------------------------------------------------------
 
 export default async () => {
-  const required = ["SAM_API_KEY", "SUPABASE_URL", "SUPABASE_SERVICE_KEY",
-    "RESEND_API_KEY", "ALERT_EMAIL_TO", "ALERT_EMAIL_FROM"];
+  const required = ["SAM_API_KEY", "SUPABASE_URL", "RESEND_API_KEY",
+    "ALERT_EMAIL_TO", "ALERT_EMAIL_FROM"];
+  if (!SUPABASE_KEY) required.push("SUPABASE_SERVICE_KEY");
   const missing = required.filter((k) => !process.env[k]);
   if (missing.length) {
     console.error("Missing env vars:", missing.join(", "));
