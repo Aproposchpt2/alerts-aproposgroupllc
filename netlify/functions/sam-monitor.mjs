@@ -15,8 +15,8 @@ const NAICS_CODES = (process.env.NAICS_CODES ||
   "541512,541519,541511,518210,561421,561499")
   .split(",").map((s) => s.trim()).filter(Boolean);
 
-// How many days back to scan each run. 2 covers weekends / a missed run.
-const LOOKBACK_DAYS = parseInt(process.env.LOOKBACK_DAYS || "2", 10);
+// 30-day backfill run — will be reverted to 2 after first trigger.
+const LOOKBACK_DAYS = parseInt(process.env.LOOKBACK_DAYS || "30", 10);
 
 // Max records per page (API ceiling is 1000).
 const PAGE_LIMIT = 1000;
