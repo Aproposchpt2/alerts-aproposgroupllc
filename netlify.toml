@@ -1,10 +1,10 @@
-# netlify.toml
 [build]
-  publish = "."
+  # One ops site serves both: the dashboard (static) and the monitor (function).
+  publish = "dashboard"
   functions = "netlify/functions"
 
-# Friendly path: POST /api/generate -> the function
-[[redirects]]
-  from = "/api/generate"
-  to = "/.netlify/functions/generate"
-  status = 200
+[functions]
+  node_bundler = "esbuild"
+
+# The daily schedule is declared in-code via `export const config = { schedule }`
+# inside netlify/functions/sam-monitor.mjs.

@@ -1,0 +1,321 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Apropos Group — Opportunity Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A1A3A; --navy-2:#13284f; --ink:#1a2332; --muted:#5a687f;
+    --line:#e4e9f2; --bg:#f4f6fb; --card:#ffffff;
+    --gold:#b5762a; --gold-soft:#d9a45b;
+    --ok:#1d7a4d; --warn:#b5762a; --hot:#c0392b;
+    --shadow:0 1px 2px rgba(10,26,58,.06),0 8px 24px rgba(10,26,58,.06);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"IBM Plex Sans",sans-serif;background:var(--bg);color:var(--ink);
+    -webkit-font-smoothing:antialiased;line-height:1.45}
+  a{color:inherit}
+  .mono{font-family:"IBM Plex Mono",monospace}
+
+  /* ---------- Login ---------- */
+  #login{min-height:100vh;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 120% at 80% -10%,#16305f 0%,var(--navy) 55%,#06122b 100%)}
+  .login-card{width:min(400px,92vw);background:var(--card);border-radius:14px;padding:34px 30px;
+    box-shadow:0 30px 80px rgba(0,0,0,.4)}
+  .logo{display:flex;align-items:center;gap:11px;margin-bottom:22px}
+  .logo .mk{width:42px;height:42px;border-radius:8px;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:"Archivo";font-weight:800;letter-spacing:.5px}
+  .logo h1{font-family:"Archivo";font-size:18px;color:var(--navy);letter-spacing:-.2px}
+  .logo .sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:600}
+  .login-card h2{font-family:"Archivo";font-size:15px;margin-bottom:5px}
+  .login-card p{font-size:13px;color:var(--muted);margin-bottom:18px}
+  input[type=email]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:9px;
+    font-family:inherit;font-size:14px;outline:none;transition:border .15s}
+  input[type=email]:focus{border-color:var(--gold)}
+  .btn{width:100%;margin-top:12px;padding:12px;border:none;border-radius:9px;background:var(--navy);
+    color:#fff;font-family:"Archivo";font-weight:700;font-size:14px;letter-spacing:.2px;cursor:pointer;
+    transition:transform .08s,background .15s}
+  .btn:hover{background:var(--navy-2)} .btn:active{transform:translateY(1px)}
+  .btn[disabled]{opacity:.6;cursor:default}
+  .note{margin-top:14px;font-size:12px;color:var(--muted);text-align:center;min-height:16px}
+  .note.ok{color:var(--ok)} .note.err{color:var(--hot)}
+
+  /* ---------- App shell ---------- */
+  #app{display:none}
+  header.bar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;
+    padding:13px 22px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 16px rgba(10,26,58,.25)}
+  header .mk{width:34px;height:34px;border-radius:7px;background:#fff;color:var(--navy);
+    display:flex;align-items:center;justify-content:center;font-family:"Archivo";font-weight:800;font-size:14px}
+  header .title{font-family:"Archivo";font-weight:700;font-size:15px;letter-spacing:.2px}
+  header .title span{color:var(--gold-soft)}
+  header .spacer{flex:1}
+  header .who{font-size:12px;color:#c5d0e6}
+  .ghost{background:transparent;border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:7px;
+    padding:7px 12px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s}
+  .ghost:hover{background:rgba(255,255,255,.12)}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:22px}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+  .toolbar input[type=search],.toolbar select{padding:9px 11px;border:1px solid var(--line);
+    border-radius:8px;font-family:inherit;font-size:13px;background:var(--card);outline:none}
+  .toolbar input[type=search]{flex:1;min-width:200px}
+  .toolbar input[type=search]:focus,.toolbar select:focus{border-color:var(--gold)}
+  .count{margin-left:auto;font-size:13px;color:var(--muted)}
+  .count b{font-family:"Archivo";color:var(--navy);font-size:15px}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  table{width:100%;border-collapse:collapse}
+  thead th{background:#f7f9fd;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;
+    color:var(--muted);font-weight:700;padding:11px 14px;border-bottom:1px solid var(--line);
+    cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:60px}
+  thead th:hover{color:var(--navy)}
+  thead th .ar{color:var(--gold);font-size:10px}
+  tbody tr{border-bottom:1px solid #eef2f8;opacity:0;animation:rise .4s ease forwards}
+  @keyframes rise{to{opacity:1;transform:none}from{transform:translateY(6px)}}
+  tbody tr:hover{background:#fafbfe}
+  td{padding:12px 14px;font-size:13px;vertical-align:top}
+  td.title a{font-weight:600;color:var(--navy);text-decoration:none}
+  td.title a:hover{text-decoration:underline;text-decoration-color:var(--gold)}
+  td.agency{color:#42506a;font-size:12px;max-width:230px}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;
+    background:#eef2f8;color:#42506a;white-space:nowrap}
+  .tag.code{font-family:"IBM Plex Mono";background:#eaf0fb;color:var(--navy)}
+  .tag.sa{background:#fbf2e6;color:var(--gold)}
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .pill.none{background:#eef2f8;color:#8a94a8}
+  .pill.ok{background:#e6f4ec;color:var(--ok)}
+  .pill.warn{background:#fbf2e6;color:var(--warn)}
+  .pill.hot{background:#fbe9e7;color:var(--hot)}
+  .empty{padding:54px 20px;text-align:center;color:var(--muted)}
+  .empty .big{font-family:"Archivo";font-size:16px;color:var(--ink);margin-bottom:6px}
+  .loading{padding:40px;text-align:center;color:var(--muted);font-size:14px}
+  .foot{margin-top:14px;font-size:11px;color:#94a0b6;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login">
+  <div class="login-card">
+    <div class="logo">
+      <div class="mk">AG</div>
+      <div>
+        <h1>Apropos Group LLC</h1>
+        <div class="sub">Opportunity Pipeline</div>
+      </div>
+    </div>
+    <h2>Sign in</h2>
+    <p>Enter your authorized email. We'll send a one-time sign-in link — no password.</p>
+    <input id="email" type="email" placeholder="you@aproposgroupllc.com" autocomplete="email" />
+    <button class="btn" id="sendLink">Send sign-in link</button>
+    <div class="note" id="loginNote"></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app">
+  <header class="bar">
+    <div class="mk">AG</div>
+    <div class="title">Opportunity <span>Pipeline</span></div>
+    <div class="spacer"></div>
+    <div class="who" id="who"></div>
+    <button class="ghost" id="refresh">Refresh</button>
+    <button class="ghost" id="signout">Sign out</button>
+  </header>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <input type="search" id="q" placeholder="Search title or agency…" />
+      <select id="fNaics"><option value="">All NAICS</option></select>
+      <select id="fType"><option value="">All notice types</option></select>
+      <select id="fSetaside"><option value="">All set-asides</option></select>
+      <select id="fDue">
+        <option value="">Any deadline</option>
+        <option value="7">Due ≤ 7 days</option>
+        <option value="14">Due ≤ 14 days</option>
+        <option value="30">Due ≤ 30 days</option>
+        <option value="open">Has a deadline</option>
+      </select>
+      <div class="count"><b id="num">0</b> opportunities</div>
+    </div>
+
+    <div class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th data-k="title">Title</th>
+            <th data-k="agency">Agency</th>
+            <th data-k="notice_type">Type</th>
+            <th data-k="naics_code">NAICS</th>
+            <th data-k="set_aside">Set-Aside</th>
+            <th data-k="posted_date">Posted</th>
+            <th data-k="_due">Response Due</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="loading" id="loading">Loading opportunities…</div>
+      <div class="empty" id="empty" style="display:none">
+        <div class="big">No opportunities match</div>
+        <div>Adjust the filters above, or wait for the daily monitor to capture new notices.</div>
+      </div>
+    </div>
+    <div class="foot">Read-only view · Data captured daily by the SAM.gov monitor · Links open the live notice on SAM.gov</div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+/* ================= CONFIG — fill these two in =================
+   Both values are PUBLIC-SAFE (the anon key is designed for the browser;
+   Row Level Security protects the data). NEVER put the service_role key here. */
+const SUPABASE_URL      = "https://judislfknmhofcgzyozc.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZGlzbGZrbm1ob2ZjZ3p5b3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMDI3ODAsImV4cCI6MjA5Mjc3ODc4MH0.Kxpe0kJt0k7ZchYu70BOwm4KdT0C5aSsyeR1ov6NlQ0";
+/* ============================================================= */
+
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const $ = (id) => document.getElementById(id);
+let ALL = [], sortKey = "posted_date", sortDir = -1;
+
+/* ---------- Auth ---------- */
+async function refreshAuth(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if (session){ showApp(session.user.email); }
+  else { $("login").style.display="flex"; $("app").style.display="none"; }
+}
+sb.auth.onAuthStateChange((_e, session)=>{ if(session) showApp(session.user.email); });
+
+$("sendLink").addEventListener("click", async ()=>{
+  const email = $("email").value.trim();
+  const note = $("loginNote");
+  if(!email){ note.className="note err"; note.textContent="Enter your email."; return; }
+  $("sendLink").disabled = true;
+  const { error } = await sb.auth.signInWithOtp({
+    email, options:{ emailRedirectTo: window.location.href }
+  });
+  if(error){ note.className="note err"; note.textContent=error.message; $("sendLink").disabled=false; }
+  else { note.className="note ok"; note.textContent="Check your inbox for the sign-in link."; }
+});
+
+$("signout").addEventListener("click", async ()=>{ await sb.auth.signOut(); location.reload(); });
+
+function showApp(email){
+  $("login").style.display="none";
+  $("app").style.display="block";
+  $("who").textContent = email;
+  load();
+}
+
+/* ---------- Data ---------- */
+async function load(){
+  $("loading").style.display="block"; $("empty").style.display="none"; $("rows").innerHTML="";
+  const { data, error } = await sb.from("sam_opportunities")
+    .select("*").order("posted_date",{ascending:false}).limit(500);
+  $("loading").style.display="none";
+  if(error){ $("empty").style.display="block"; $("empty").querySelector(".big").textContent="Couldn't load data"; 
+    $("empty").querySelector("div:last-child").textContent=error.message; return; }
+  ALL = data || [];
+  buildFilters(); render();
+}
+
+function uniq(key){ return [...new Set(ALL.map(o=>o[key]).filter(Boolean))].sort(); }
+function buildFilters(){
+  fill($("fNaics"), uniq("naics_code"), "All NAICS");
+  fill($("fType"), uniq("notice_type"), "All notice types");
+  fill($("fSetaside"), uniq("set_aside"), "All set-asides");
+}
+function fill(sel, vals, allLabel){
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">${allLabel}</option>` + vals.map(v=>`<option>${esc(v)}</option>`).join("");
+  sel.value = cur;
+}
+
+/* days until a response deadline (null if none/unparseable) */
+function daysUntil(s){
+  if(!s) return null;
+  const d = new Date(s); if(isNaN(d)) return null;
+  return Math.ceil((d - new Date())/86400000);
+}
+function duePill(s){
+  const d = daysUntil(s);
+  if(d===null) return `<span class="pill none">—</span>`;
+  const label = new Date(s).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+  let cls = "ok"; if(d<0) cls="none"; else if(d<=7) cls="hot"; else if(d<=21) cls="warn";
+  const tail = d<0 ? "closed" : `${d}d`;
+  return `<span class="pill ${cls}">${label} · ${tail}</span>`;
+}
+function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+/* ---------- Filtering + render ---------- */
+function filtered(){
+  const q = $("q").value.trim().toLowerCase();
+  const n = $("fNaics").value, t = $("fType").value, sa = $("fSetaside").value, due = $("fDue").value;
+  return ALL.filter(o=>{
+    if(q && !(`${o.title||""} ${o.agency||""}`.toLowerCase().includes(q))) return false;
+    if(n && o.naics_code!==n) return false;
+    if(t && o.notice_type!==t) return false;
+    if(sa && o.set_aside!==sa) return false;
+    if(due){
+      const d = daysUntil(o.response_deadline);
+      if(due==="open" && d===null) return false;
+      if(["7","14","30"].includes(due) && !(d!==null && d>=0 && d<=+due)) return false;
+    }
+    return true;
+  });
+}
+function sortRows(rows){
+  return rows.sort((a,b)=>{
+    let av,bv;
+    if(sortKey==="_due"){ av=daysUntil(a.response_deadline); bv=daysUntil(b.response_deadline);
+      av=av===null?Infinity:av; bv=bv===null?Infinity:bv; }
+    else { av=(a[sortKey]||"").toString().toLowerCase(); bv=(b[sortKey]||"").toString().toLowerCase(); }
+    return av<bv? -sortDir : av>bv? sortDir : 0;
+  });
+}
+function render(){
+  const rows = sortRows(filtered());
+  $("num").textContent = rows.length;
+  if(rows.length===0){ $("rows").innerHTML=""; $("empty").style.display="block"; return; }
+  $("empty").style.display="none";
+  $("rows").innerHTML = rows.map((o,i)=>{
+    const link = o.ui_link || `https://sam.gov/opp/${o.notice_id}/view`;
+    const posted = o.posted_date ? esc(o.posted_date.slice(0,10)) : "—";
+    return `<tr style="animation-delay:${Math.min(i*18,360)}ms">
+      <td class="title"><a href="${esc(link)}" target="_blank" rel="noopener">${esc(o.title||"Untitled")}</a></td>
+      <td class="agency">${esc(o.agency||"—")}</td>
+      <td><span class="tag">${esc(o.notice_type||"—")}</span></td>
+      <td><span class="tag code">${esc(o.naics_code||"—")}</span></td>
+      <td>${o.set_aside?`<span class="tag sa">${esc(o.set_aside)}</span>`:`<span class="tag">Unrestricted</span>`}</td>
+      <td class="mono" style="font-size:12px;color:#5a687f">${posted}</td>
+      <td>${duePill(o.response_deadline)}</td>
+    </tr>`;
+  }).join("");
+}
+
+/* ---------- Wire controls ---------- */
+["q","fNaics","fType","fSetaside","fDue"].forEach(id=>{
+  $(id).addEventListener("input", render);
+});
+document.querySelectorAll("thead th").forEach(th=>{
+  th.addEventListener("click", ()=>{
+    const k = th.dataset.k;
+    if(sortKey===k) sortDir*=-1; else { sortKey=k; sortDir=(k==="posted_date"||k==="_due")?-1:1; }
+    document.querySelectorAll("thead th").forEach(x=>{const b=x.querySelector(".ar"); if(b)b.remove();});
+    th.insertAdjacentHTML("beforeend",` <span class="ar">${sortDir>0?"▲":"▼"}</span>`);
+    render();
+  });
+});
+$("refresh").addEventListener("click", load);
+
+refreshAuth();
+</script>
+</body>
+</html>
+
