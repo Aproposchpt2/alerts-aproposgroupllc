@@ -94,11 +94,10 @@ async function fetchOppsForNaics(naics, postedFrom, postedTo) {
 // Supabase (PostgREST) — dedupe + insert via service-role key
 // ---------------------------------------------------------------------------
 
-// Prefer service-role key; fall back to anon key (public value, already in dashboard/index.html).
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY ||
-                     process.env.SUPABASE_SERVICE_ROLE_KEY ||
-                     process.env.SUPABASE_ANON_KEY ||
-                     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZGlzbGZrbm1ob2ZjZ3p5b3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMDI3ODAsImV4cCI6MjA5Mjc3ODc4MH0.Kxpe0kJt0k7ZchYu70BOwm4KdT0C5aSsyeR1ov6NlQ0";
+// Anon key for judislfknmhofcgzyozc (ai4websitedesign project).
+// Public value — already present in dashboard/index.html in this repo.
+// RLS policies grant anon SELECT + INSERT on sam_opportunities.
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp1ZGlzbGZrbm1ob2ZjZ3p5b3pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMDI3ODAsImV4cCI6MjA5Mjc3ODc4MH0.Kxpe0kJt0k7ZchYu70BOwm4KdT0C5aSsyeR1ov6NlQ0";
 
 function sbHeaders(extra = {}) {
   return {
