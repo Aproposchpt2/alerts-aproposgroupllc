@@ -1,0 +1,10 @@
+# netlify.toml
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Friendly path: POST /api/generate -> the function
+[[redirects]]
+  from = "/api/generate"
+  to = "/.netlify/functions/generate"
+  status = 200

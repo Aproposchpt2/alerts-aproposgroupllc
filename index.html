@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI4 · Promo Site Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Serif:ital@0;1&family=Sora:wght@300;400;500;600;700;800&family=Jost:wght@300;400;500;600;700&family=Spline+Sans+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0B0E14; --panel:#11151F; --panel-2:#161B27; --line:rgba(255,255,255,.09);
+    --ink:#E9EDF5; --ink-soft:#9AA5BC; --ink-faint:#5E6A82;
+    --accent:#5BE6C8; --accent-2:#7C9CFF; --ui:'Sora',-apple-system,sans-serif;
+  }
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--ui);font-weight:300;
+    display:flex;flex-direction:column;height:100vh;overflow:hidden}
+  header.eng{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:14px 22px;border-bottom:1px solid var(--line);background:var(--panel);flex-shrink:0}
+  .eng .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:16px;letter-spacing:-.01em}
+  .eng .logo-dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(140deg,var(--accent),var(--accent-2));
+    box-shadow:0 0 22px -4px var(--accent);display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:12px;color:#06210b}
+  .eng .brand small{font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:9.5px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--ink-faint)}
+  .eng .tag{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint)}
+  .stage{display:grid;grid-template-columns:392px 1fr;flex:1;min-height:0}
+  @media(max-width:880px){.stage{grid-template-columns:1fr;overflow:auto}}
+  .panel{background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;padding:22px}
+  .step{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .panel h2{font-weight:700;font-size:19px;letter-spacing:-.01em;margin-bottom:4px}
+  .panel .sub{font-size:12.5px;color:var(--ink-soft);margin-bottom:20px;line-height:1.5}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-size:12px;font-weight:500;margin-bottom:6px}
+  .field textarea,.field input{width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+    color:var(--ink);font-family:var(--ui);font-size:13px;font-weight:300;padding:10px 12px;resize:vertical;line-height:1.45;transition:border-color .2s}
+  .field textarea{min-height:62px}
+  .field textarea:focus,.field input:focus{outline:none;border-color:var(--accent)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .actions{position:sticky;bottom:-22px;background:linear-gradient(180deg,transparent,var(--panel) 30%);padding:18px 0 4px;margin-top:6px}
+  .btn{width:100%;border:none;border-radius:11px;padding:14px;font-family:var(--ui);font-weight:600;font-size:14px;cursor:pointer;transition:transform .2s,box-shadow .2s,opacity .2s}
+  .btn-primary{color:#06210b;background:linear-gradient(100deg,var(--accent),var(--accent-2));box-shadow:0 12px 34px -12px var(--accent)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 44px -12px var(--accent)}
+  .btn-primary:disabled{opacity:.55;cursor:wait;transform:none}
+  .btn-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+  .btn-ghost{background:var(--panel-2);border:1px solid var(--line);color:var(--ink);font-weight:500;font-size:12.5px;padding:11px}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+  .hint{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);text-align:center;margin-top:11px;letter-spacing:.04em;line-height:1.5}
+  .preview{position:relative;background:#05070b;min-height:0;display:flex;flex-direction:column}
+  .pv-bar{display:flex;align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid var(--line);background:var(--panel);flex-shrink:0}
+  .pv-dots{display:flex;gap:6px}.pv-dots i{width:10px;height:10px;border-radius:50%;background:#2b3242;display:block}
+  .pv-url{flex:1;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);background:var(--panel-2);border:1px solid var(--line);border-radius:7px;padding:5px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pv-style{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(91,230,200,.3);border-radius:30px;padding:4px 11px;white-space:nowrap}
+  .pv-style .sw{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.4)}
+  .frame-wrap{flex:1;position:relative;min-height:0}
+  iframe{width:100%;height:100%;border:0;background:#fff;display:block}
+  .empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;color:var(--ink-faint);text-align:center;padding:30px}
+  .empty .big{font-family:'Bodoni Moda',serif;font-size:30px;color:var(--ink-soft)}
+  .empty .sm{font-size:13px;max-width:36ch;line-height:1.6}
+  .spinner{width:38px;height:38px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--accent);animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .pulse{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;color:var(--ink-soft)}
+  .err{color:#FF8B7A;font-size:12.5px;max-width:42ch;line-height:1.6}
+</style>
+</head>
+<body>
+<header class="eng">
+  <div class="brand"><span class="logo-dot">A4</span> Promo Site Engine <small>generative · by AI4</small></div>
+  <div class="tag">Intake → AI Copy + AI Design → Live Site</div>
+</header>
+<div class="stage">
+  <div class="panel">
+    <div class="step">Step 1 · Customer Intake</div>
+    <h2>Five questions</h2>
+    <p class="sub">The agent writes the copy AND invents a brand-new design — palette, type, layout, texture — on every run. No two sites alike.</p>
+    <div class="field"><label>Business name</label><input id="q_name" type="text"></div>
+    <div class="field"><label>What does the business do?</label><textarea id="q_what"></textarea></div>
+    <div class="field"><label>Who are the ideal customers?</label><textarea id="q_who"></textarea></div>
+    <div class="field"><label>What makes you different?</label><textarea id="q_diff"></textarea></div>
+    <div class="field"><label>Anything else visitors should know?</label><textarea id="q_else"></textarea></div>
+    <div class="step" style="margin-top:8px">Contact (optional)</div>
+    <div class="grid2"><div class="field"><label>Website</label><input id="c_site" type="text"></div><div class="field"><label>Email</label><input id="c_email" type="text"></div></div>
+    <div class="field"><label>Address</label><input id="c_addr" type="text"></div>
+    <div class="actions">
+      <button class="btn btn-primary" id="go">Generate site →</button>
+      <div class="btn-row">
+        <button class="btn btn-ghost" id="shuffle">🎲 New design</button>
+        <button class="btn btn-ghost" id="rewrite">✎ Rewrite copy</button>
+      </div>
+      <div class="hint" id="hint">Calls your Netlify function · falls back to demo AI / built-in writer</div>
+    </div>
+  </div>
+  <div class="preview">
+    <div class="pv-bar">
+      <div class="pv-dots"><i></i><i></i><i></i></div>
+      <div class="pv-url" id="pvurl">about:blank</div>
+      <div class="pv-style" id="pvstyle" style="display:none"></div>
+    </div>
+    <div class="frame-wrap">
+      <iframe id="frame" title="Generated site preview"></iframe>
+      <div class="empty" id="empty">
+        <div class="big">No site yet.</div>
+        <div class="sm">Hit <b style="color:var(--accent)">Generate site</b>. The agent writes the copy and designs a one-of-a-kind look from scratch.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   PROMO SITE ENGINE — generative edition
+   intake -> AI {content, design recipe} -> parametric renderer -> site
+   Generation order: (1) your Netlify function  (2) in-page demo API
+   (3) built-in local writer + random recipe. Always produces a site.
+   ===================================================================== */
+
+const FN_ENDPOINT = "/.netlify/functions/generate"; // your server step (holds the key)
+
+const SAMPLE={
+  name:"FlowDesk Pro",
+  what:"AI4 Businesses builds practical automation systems that help businesses modernize how they handle calls, leads, customer intake, and follow-up. From smart auto-attendants to lead management dashboards and intake workflows, we help businesses respond faster, stay organized, and create a more professional customer experience.",
+  who:"Business owners and teams ready to modernize how they handle calls, leads, customer intake, and follow-up — who want practical automation that saves time and reduces missed opportunities without adding staff or complexity.",
+  diff:"Our focus is not flashy technology alone — it is building usable systems that improve how a business actually operates: capturing missed opportunities, organizing customer information, supporting faster response, and creating a more professional experience.",
+  else:"Every system we build helps your business operate with more structure, speed, and confidence — turning everyday activity into organized, actionable workflows.",
+  site:"aiflowdeskpro.com", email:"jmitchell@ai4businesses.com", addr:"2780 South Jones Boulevard, Las Vegas, NV 89146"
+};
+const $=id=>document.getElementById(id);
+function fill(){$("q_name").value=SAMPLE.name;$("q_what").value=SAMPLE.what;$("q_who").value=SAMPLE.who;
+  $("q_diff").value=SAMPLE.diff;$("q_else").value=SAMPLE.else;$("c_site").value=SAMPLE.site;$("c_email").value=SAMPLE.email;$("c_addr").value=SAMPLE.addr;}
+fill();
+function readAnswers(){return{name:$("q_name").value.trim()||"Your Business",what:$("q_what").value.trim(),
+  who:$("q_who").value.trim(),diff:$("q_diff").value.trim(),else:$("q_else").value.trim(),
+  site:$("c_site").value.trim(),email:$("c_email").value.trim(),addr:$("c_addr").value.trim()};}
+const esc=s=>(s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+/* curated font palette the renderer can rely on (loaded in this page + injected into each site) */
+const FONT_LINK='<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,400&family=Cormorant:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Instrument+Serif:ital@0;1&family=Sora:wght@300;400;500;600;700;800&family=Jost:wght@300;400;500;600;700&family=Spline+Sans+Mono:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">';
+const DISPLAY_FONTS=["Fraunces","Bodoni Moda","Cormorant","Sora","Instrument Serif","Newsreader","Jost"];
+const BODY_FONTS=["Newsreader","Jost","Sora","Cormorant"];
+const MONO_FONTS=["Spline Sans Mono","IBM Plex Mono"];
+const LAYOUTS=["centered","editorial","cards"];
+const SURFACES=["glass","bordered","paper"];
+const TEXTURES=["aurora","grain","none"];
+const SHAPES=["pill","square","underline"];
+
+/* the JSON contract we ask the model for (shared by server + demo) */
+const SCHEMA_PROMPT=
+"Return ONLY a JSON object (no markdown, no prose) shaped exactly as: "
++'{"content":{"brand":string,"category":string(2-3 words),"eyebrow":string(2-4 words),'
++'"headline":string(<=10 words),"standfirst":string(1-2 sentences),"stats":[3 short strings],'
++'"sections":[4 {"title":string(<=6 words),"blurb":string(1 sentence),"points":[3 short strings]}],'
++'"closeHeadline":string(<=8 words),"closeText":string(1 sentence),"cta":string(2-4 words)},'
++'"design":{"mood":string,"theme":"dark"|"light",'
++'"palette":{"bg":hex,"surface":hex,"ink":hex,"inkSoft":hex,"accent":hex,"accent2":hex},'
++'"fonts":{"display":one of '+JSON.stringify(DISPLAY_FONTS)+',"body":one of '+JSON.stringify(BODY_FONTS)+',"mono":one of '+JSON.stringify(MONO_FONTS)+'},'
++'"layout":one of '+JSON.stringify(LAYOUTS)+',"surfaceStyle":one of '+JSON.stringify(SURFACES)+',"texture":one of '+JSON.stringify(TEXTURES)+','
++'"radius":int 0-26,"displayWeight":int 300-800,"accentShape":one of '+JSON.stringify(SHAPES)+'}}. '
++"Invent a fresh, cohesive, tasteful palette and an unexpected but harmonious font pairing. Make the design feel specifically right for THIS business and noticeably different each time. Copy must be concrete and confident, no clichés.";
+
+function parseJSON(text){const c=text.replace(/```json|```/g,"").trim();
+  const s=c.indexOf("{"),e=c.lastIndexOf("}");return JSON.parse(c.slice(s,e>=0?e+1:undefined));}
+
+/* ---------- (1) production: your Netlify function ---------- */
+async function viaFunction(answers,mode){
+  const res=await fetch(FN_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({answers,mode})});
+  if(!res.ok) throw new Error("fn "+res.status);
+  return res.json(); // {content, design}
+}
+/* ---------- (2) demo: in-page model call (claude.ai artifact only) ---------- */
+async function viaDemoAPI(answers,mode){
+  const ctx=`Business name: ${answers.name}\nWhat: ${answers.what}\nCustomers: ${answers.who}\nDifferent: ${answers.diff}\nAlso: ${answers.else}`;
+  const ask = mode==="design"
+    ? "Keep wording implied by the business but design a brand-new look. "+SCHEMA_PROMPT
+    : SCHEMA_PROMPT;
+  const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:ask+"\n\n"+ctx}]})});
+  if(!res.ok) throw new Error("api "+res.status);
+  const data=await res.json();
+  const text=(data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("");
+  return parseJSON(text);
+}
+/* ---------- (3) offline: local writer + random recipe ---------- */
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function rint(a,b){return Math.floor(a+Math.random()*(b-a+1));}
+function randomDesign(){
+  const dark=Math.random()<0.55;
+  const hue=rint(0,360), hue2=(hue+rint(30,180))%360;
+  const accent=`hsl(${hue} ${rint(60,85)}% ${dark?60:48}%)`;
+  const accent2=`hsl(${hue2} ${rint(55,80)}% ${dark?62:50}%)`;
+  return {mood:dark?"deep / refined":"bright / editorial",theme:dark?"dark":"light",
+    palette:{bg:dark?`hsl(${hue} 18% 7%)`:`hsl(${hue} 30% 96%)`,surface:dark?`hsl(${hue} 16% 11%)`:`hsl(${hue} 24% 99%)`,
+      ink:dark?"#ECEFF6":"#15110E",inkSoft:dark?"#9AA5BC":"#5b5346",accent,accent2},
+    fonts:{display:pick(DISPLAY_FONTS),body:pick(BODY_FONTS),mono:pick(MONO_FONTS)},
+    layout:pick(LAYOUTS),surfaceStyle:pick(SURFACES),texture:pick(TEXTURES),
+    radius:rint(0,24),displayWeight:pick([300,400,500,600,700,800]),accentShape:pick(SHAPES)};
+}
+function sentences(t){return (t||"").replace(/\s+/g," ").split(/(?<=[.!?])\s+/).filter(Boolean);}
+function clip(t,n){const w=(t||"").split(/\s+/);return w.slice(0,n).join(" ");}
+function localContent(a){
+  const whatS=sentences(a.what), diffS=sentences(a.diff), cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+  const head=a.what?cap(clip(whatS[0].replace(/^[A-Z][\w' ]+ (builds|helps|provides|offers|is) /i,""),9)).replace(/[.,]$/,""):a.name+" — built to move faster";
+  return{brand:a.name,category:clip(a.what||"Business Systems",2)||"Business Systems",
+    eyebrow:a.who?("For "+clip(a.who.replace(/^Our ideal customers are /i,""),3)):"Built for growth",
+    headline:head,standfirst:(whatS.slice(0,2).join(" ")||a.what||"A modern system for a modern business."),
+    stats:["Faster — response that lands","Organized — one clean system","Professional — every touch"],
+    sections:[
+      {title:"Capture every opportunity",blurb:diffS[0]||"Nothing slips through the cracks.",points:["No missed calls or leads","Every inquiry logged","Faster first response"]},
+      {title:"Stay organized",blurb:"Customer information lives in one structured place.",points:["One source of truth","Clean records","Shared team view"]},
+      {title:"A professional experience",blurb:a.else?clip(a.else,18):"Every interaction feels polished.",points:["Consistent follow-up","On-brand touchpoints","Confident handling"]},
+      {title:"Built to operate",blurb:"Practical systems that improve how the business runs.",points:["Less manual work","More structure","Room to scale"]}
+    ],closeHeadline:"Ready when your customers are.",closeText:(a.else?clip(a.else,22):"Turn everyday activity into organized, actionable workflows."),cta:"Get started"};
+}
+
+/* =================== PARAMETRIC RENDERER =================== */
+function contactLine(c){const b=[];if(c){if(c.site)b.push(esc(c.site));if(c.email)b.push(esc(c.email));if(c.addr)b.push(esc(c.addr));}return b.join(" &nbsp;·&nbsp; ");}
+function norm(d){ d=d||{}; const p=d.palette||{};
+  return {mood:d.mood||"",theme:d.theme||"dark",
+    bg:p.bg||"#0b0e14",surface:p.surface||"#141925",ink:p.ink||"#eceff6",inkSoft:p.inkSoft||"#9aa5bc",
+    accent:p.accent||"#5be6c8",accent2:p.accent2||d.palette&&p.accent||"#7c9cff",
+    fd:(d.fonts&&d.fonts.display)||"Fraunces",fb:(d.fonts&&d.fonts.body)||"Jost",fm:(d.fonts&&d.fonts.mono)||"IBM Plex Mono",
+    layout:d.layout||"centered",surf:d.surfaceStyle||"bordered",tex:d.texture||"none",
+    r:Math.max(0,Math.min(26,d.radius==null?14:d.radius)),dw:d.displayWeight||500,shape:d.accentShape||"pill"};
+}
+function textureCSS(t){
+  if(t.tex==="aurora") return `body::before{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;filter:blur(50px);opacity:.9;background:radial-gradient(38% 40% at 18% 22%,${t.accent}38,transparent 60%),radial-gradient(42% 44% at 84% 16%,${t.accent2}33,transparent 62%),radial-gradient(50% 50% at 60% 95%,${t.accent}22,transparent 60%);animation:drift 26s ease-in-out infinite alternate}@keyframes drift{to{transform:translate3d(-4%,3%,0) scale(1.14)}}`;
+  if(t.tex==="grain") return `body::before{content:"";position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.05;mix-blend-mode:${t.theme==='light'?'multiply':'screen'};background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")}`;
+  if(t.tex==="grid") return `body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;background:linear-gradient(${t.ink}0d 1px,transparent 1px),linear-gradient(90deg,${t.ink}0d 1px,transparent 1px);background-size:46px 46px}`;
+  return "";
+}
+function surfaceCSS(t){
+  if(t.surf==="glass") return `background:linear-gradient(160deg,#ffffff14,#ffffff05);border:1px solid #ffffff1f;backdrop-filter:blur(16px);box-shadow:0 24px 60px -28px #00000099,inset 0 1px 0 #ffffff1a`;
+  if(t.surf==="paper") return `background:${t.surface};border:1px solid ${t.ink}1f;box-shadow:8px 10px 0 -2px ${t.ink}12`;
+  return `background:${t.surface};border:1px solid ${t.ink}24`;
+}
+function marker(t){ // returns css for list bullet
+  if(t.shape==="square") return `width:8px;height:8px;background:${t.accent};transform:rotate(45deg)`;
+  if(t.shape==="underline") return `width:16px;height:2px;background:${t.accent};border-radius:2px;top:14px`;
+  return `width:8px;height:8px;border-radius:50%;background:${t.accent}`;
+}
+function buildSite(content,design){
+  const t=norm(design);
+  const align = t.layout==="editorial" ? "left":"center";
+  const stats=(content.stats||[]).map(s=>`<div class="stat">${esc(s)}</div>`).join("");
+  let sections;
+  if(t.layout==="cards"){
+    sections=`<div class="grid">`+(content.sections||[]).map((s,i)=>`<div class="card surf"><div class="num">${String(i+1).padStart(2,'0')}</div><h2>${esc(s.title)}</h2><p class="blurb">${esc(s.blurb)}</p><ul>${(s.points||[]).map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div>`).join("")+`</div>`;
+  } else if(t.layout==="editorial"){
+    sections=(content.sections||[]).map((s,i)=>`<section class="sec ed"><div class="rail"><div class="num">${String(i+1).padStart(2,'0')}</div></div><div class="bd"><h2>${esc(s.title)}</h2><p class="blurb">${esc(s.blurb)}</p><ul>${(s.points||[]).map(p=>`<li>${esc(p)}</li>`).join("")}</ul></div></section>`).join("");
+  } else {
+    sections=(content.sections||[]).map((s,i)=>`<section class="sec ce"><div class="num">${String(i+1).padStart(2,'0')}</div><h2>${esc(s.title)}</h2><p class="blurb">${esc(s.blurb)}</p><ul>${(s.points||[]).map(p=>`<li>${esc(p)}</li>`).join("")}</ul></section>`).join("");
+  }
+  const labelCase=`letter-spacing:.2em;text-transform:uppercase`;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${FONT_LINK}<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:${t.bg};color:${t.ink};font-family:'${t.fb}',serif;font-weight:300;line-height:1.65;position:relative;overflow-x:hidden}
+  ${textureCSS(t)}
+  .wrap{max-width:${t.layout==='cards'?1080:960}px;margin:0 auto;padding:0 32px;position:relative;z-index:2}
+  .surf{${surfaceCSS(t)};border-radius:${t.r}px}
+  .hero{padding:88px 0 36px;text-align:${align}}
+  .eyebrow{display:inline-block;font-family:'${t.fm}',monospace;font-size:11px;${labelCase};color:${t.accent};${t.shape==='pill'?`border:1px solid ${t.accent}55;padding:8px 16px;border-radius:30px;background:${t.accent}10`:'padding:0 0 6px'}}
+  h1{font-family:'${t.fd}',serif;font-weight:${t.dw};font-size:clamp(2.8rem,8.5vw,5.6rem);line-height:1;letter-spacing:-.02em;margin:22px 0 0;color:${t.ink}}
+  .cat{font-family:'${t.fm}',monospace;font-size:12px;${labelCase};color:${t.inkSoft};margin-top:20px}
+  .standfirst{max-width:60ch;${align==='center'?'margin:38px auto 0':'margin:36px 0 0'};font-size:clamp(1.15rem,2.2vw,1.45rem);color:${t.inkSoft}}
+  .ledger{display:flex;flex-wrap:wrap;${align==='center'?'justify-content:center':''};gap:12px;margin:42px 0 0}
+  .stat{font-family:'${t.fm}',monospace;font-size:12px;letter-spacing:.04em;color:${t.inkSoft};padding:13px 18px;border-radius:${Math.min(t.r,16)}px;${t.surf==='glass'?'background:#ffffff10;border:1px solid #ffffff1f':`border:1px solid ${t.ink}24`}}
+  .sec{padding:56px 0;border-top:1px solid ${t.ink}1a}
+  .sec.ce{text-align:center;max-width:62ch;margin:0 auto}
+  .sec.ed{display:grid;grid-template-columns:140px 1fr;gap:30px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin:60px 0}
+  .card{padding:28px 24px}
+  .num{font-family:'${t.fd}',serif;font-weight:${Math.min(t.dw,500)};font-size:${t.layout==='editorial'?'4.6rem':'2rem'};line-height:.9;color:${t.accent};margin-bottom:8px}
+  h2{font-family:'${t.fd}',serif;font-weight:${Math.min(t.dw+100,800)};font-size:clamp(1.5rem,3.6vw,2.3rem);line-height:1.08;letter-spacing:-.01em}
+  .blurb{margin:14px 0 16px;font-size:1.08rem;color:${t.inkSoft}}
+  ul{list-style:none;${t.layout==='centered'?'display:inline-flex;flex-wrap:wrap;gap:10px;justify-content:center':'display:flex;flex-direction:column;gap:9px'}}
+  li{position:relative;color:${t.layout==='centered'?t.ink:t.inkSoft};${t.layout==='centered'?`font-family:'${t.fm}',monospace;font-size:12px;letter-spacing:.03em;border:1px solid ${t.accent}40;padding:8px 14px;border-radius:30px`:'padding-left:20px;font-size:.98rem'}}
+  ${t.layout!=='centered'?`li::before{content:"";position:absolute;left:0;top:9px;${marker(t)}}`:''}
+  .close{text-align:center;padding:92px 0 28px;border-top:1px solid ${t.ink}1a}
+  .close .surf{padding:58px 36px;display:inline-block;max-width:760px}
+  .close h3{font-family:'${t.fd}',serif;font-weight:${t.dw};font-size:clamp(2.2rem,6vw,4rem);line-height:1.04;max-width:18ch;margin:0 auto;color:${t.ink}}
+  .close p{max-width:52ch;margin:24px auto 34px;font-size:1.18rem;color:${t.inkSoft}}
+  .cta{display:inline-block;font-family:'${t.fm}',monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none;
+    padding:17px 38px;border-radius:${Math.min(t.r,30)}px;color:${t.theme==='light'?'#fff':t.bg};background:linear-gradient(100deg,${t.accent},${t.accent2});box-shadow:0 16px 44px -14px ${t.accent}}
+  .cta:hover{filter:brightness(1.08)}
+  footer{text-align:center;padding:36px 0 64px;font-family:'${t.fm}',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:${t.inkSoft};border-top:1px solid ${t.ink}14}
+  @media(max-width:600px){.sec.ed{grid-template-columns:1fr;gap:8px}.num{font-size:3rem}}
+  </style></head><body><div class="wrap">
+    <div class="hero">
+      <div class="eyebrow">${esc(content.eyebrow)}</div>
+      <h1>${esc(content.brand)}</h1>
+      <div class="cat">${esc(content.category)}</div>
+      <p class="standfirst">${esc(content.standfirst)}</p>
+      <div class="ledger">${stats}</div>
+    </div>
+    ${sections}
+    <div class="close"><div class="surf"><h3>${esc(content.closeHeadline)}</h3><p>${esc(content.closeText)}</p><a class="cta" href="#">${esc(content.cta)} →</a></div></div>
+    <footer>${contactLine(content.contact)||esc(content.brand)}</footer>
+  </div></body></html>`;
+}
+
+/* =================== ORCHESTRATION =================== */
+let cur=null;            // {content, design}
+function render(){
+  if(!cur) return;
+  const doc=buildSite(cur.content,cur.design);
+  $("frame").srcdoc=doc;
+  $("empty").style.display="none";
+  const d=norm(cur.design), pv=$("pvstyle");
+  pv.style.display="flex";
+  pv.innerHTML=`<span class="sw" style="background:${d.accent}"></span>${esc((cur.design&&cur.design.mood)||d.layout)} · ${esc(d.fd)}`;
+  const site=(cur.content.contact&&cur.content.contact.site)||(cur.content.brand||"site").toLowerCase().replace(/[^a-z0-9]+/g,"")+".com";
+  $("pvurl").textContent="https://"+site;
+}
+function busy(b,msg){$("go").disabled=b;$("go").textContent=b?"Generating…":"Generate site →";
+  if(b){$("empty").style.display="flex";$("empty").innerHTML='<div class="spinner"></div><div class="pulse">'+(msg||"Writing copy & designing…")+'</div>';}}
+
+async function obtain(answers,mode){
+  // try production function, then demo API, then local. returns {content,design,via}
+  try{ const r=await viaFunction(answers,mode); return {...r,via:"your Netlify function"}; }catch(e){}
+  try{ const r=await viaDemoAPI(answers,mode); return {...r,via:"demo AI (Claude)"}; }catch(e){}
+  return {content:localContent(answers),design:randomDesign(),via:"built-in writer (offline)"};
+}
+async function generate(newCopy,newDesign){
+  const a=readAnswers(); busy(true);
+  const r=await obtain(a,newCopy?"full":"design");
+  if(!cur) cur={};
+  if(newCopy){ cur.content=r.content; cur.content.contact={site:a.site,email:a.email,addr:a.addr}; }
+  if(newDesign||!cur.design){ cur.design=r.design; }
+  $("hint").textContent="✓ via "+r.via;
+  busy(false); render();
+}
+$("go").addEventListener("click",()=>generate(true,true));
+$("rewrite").addEventListener("click",()=>generate(true,false));
+$("shuffle").addEventListener("click",()=>{ if(!cur){generate(true,true);return;} generate(false,true); });
+</script>
+</body>
+</html>
