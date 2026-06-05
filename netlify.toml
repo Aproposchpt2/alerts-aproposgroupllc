@@ -1,4 +1,4 @@
-[build]
+﻿[build]
   # One ops site: dashboard (static) + sam-monitor (scheduled function).
   publish = "dashboard"
   functions = "netlify/functions"
