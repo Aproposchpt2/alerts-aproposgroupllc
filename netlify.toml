@@ -1,7 +1,12 @@
 [build]
-  # One ops site serves both: the dashboard (static) and the monitor (function).
+  # One ops site: dashboard (static) + sam-monitor (scheduled function).
   publish = "dashboard"
   functions = "netlify/functions"
+
+  # SUPABASE_URL is intentionally public in dashboard/index.html (anon client).
+  # Only SUPABASE_SERVICE_KEY is a true secret and never appears in static files.
+  [build.environment]
+    SECRETS_SCAN_OMIT_KEYS = "SUPABASE_URL"
 
 [functions]
   node_bundler = "esbuild"
