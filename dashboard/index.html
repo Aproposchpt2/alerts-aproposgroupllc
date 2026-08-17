@@ -60,27 +60,48 @@
 
   .wrap{max-width:1240px;margin:0 auto;padding:22px}
 
-  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
-  .toolbar input[type=search],.toolbar select{padding:9px 11px;border:1px solid var(--line);
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
+  .toolbar input[type=search],.toolbar select,.multi-toggle{padding:9px 11px;border:1px solid var(--line);
     border-radius:8px;font-family:inherit;font-size:13px;background:var(--card);color:var(--ink);outline:none}
-  .toolbar input[type=search]{flex:1;min-width:200px}
-  .toolbar input[type=search]:focus,.toolbar select:focus{border-color:var(--gold)}
-  .count{margin-left:auto;font-size:13px;color:var(--muted)}
-  .count b{font-family:"Archivo";color:var(--navy);font-size:15px}
+  .toolbar input[type=search]{flex:2 1 240px}
+  .toolbar select{flex:1 1 170px;min-width:150px}
+  .toolbar #fSetaside{flex:1.4 1 230px}
+  .toolbar input[type=search]:focus,.toolbar select:focus,.multi-toggle:focus{border-color:var(--gold)}
+  .toolbar option{background:var(--card);color:var(--ink)}
+  .count{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap}
+  .count b{font-family:"Archivo";color:var(--gold-soft);font-size:15px}
 
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .multi-filter{position:relative;flex:1 1 170px;min-width:160px}
+  .multi-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;text-align:left}
+  .multi-toggle::after{content:"▾";color:var(--gold-soft)}
+  .multi-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:40;width:min(320px,86vw);max-height:300px;
+    overflow:auto;padding:7px;background:#0a1a30;border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow)}
+  .naics-option{display:flex;align-items:center;gap:9px;padding:8px;border-radius:6px;color:var(--ink);font-size:13px;cursor:pointer}
+  .naics-option:hover{background:rgba(200,155,60,.1)}
+  .naics-option input{accent-color:var(--gold)}
+  .selected-naics-bar{display:flex;align-items:center;gap:9px;min-height:42px;margin-bottom:16px;padding:7px 10px;
+    border:1px solid var(--line);border-radius:9px;background:rgba(200,155,60,.06)}
+  .selected-naics-bar[hidden]{display:none}
+  .selected-naics-label{font-family:"Archivo";font-size:11px;font-weight:700;letter-spacing:.55px;text-transform:uppercase;color:var(--muted)}
+  .selected-naics-chips{display:flex;flex:1;flex-wrap:wrap;gap:6px}
+  .naics-chip{display:inline-flex;align-items:center;gap:7px;padding:4px 8px;border:1px solid rgba(200,155,60,.42);
+    border-radius:20px;background:rgba(200,155,60,.12);color:var(--gold-soft);font-family:"IBM Plex Mono";font-size:11px}
+  .naics-chip button{border:0;background:transparent;color:inherit;cursor:pointer;font-size:15px;line-height:1}
+  .clear-naics{border:0;background:transparent;color:var(--gold-soft);font:600 12px "IBM Plex Sans";cursor:pointer;white-space:nowrap}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:auto;box-shadow:var(--shadow);isolation:isolate}
   table{width:100%;border-collapse:collapse}
-  thead th{background:rgba(200,155,60,.08);text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;
+  thead th{background:#10243d;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;
     color:var(--muted);font-weight:700;padding:11px 14px;border-bottom:1px solid var(--line);
-    cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:60px}
-  thead th:hover{color:var(--navy)}
+    cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:0;z-index:3}
+  thead th:hover{color:var(--gold-soft)}
   thead th .ar{color:var(--gold);font-size:10px}
   tbody tr{border-bottom:1px solid rgba(255,255,255,.08);opacity:0;animation:rise .4s ease forwards}
   @keyframes rise{to{opacity:1;transform:none}from{transform:translateY(6px)}}
   tbody tr:hover{background:rgba(200,155,60,.06)}
   td{padding:12px 14px;font-size:13px;vertical-align:top}
-  td.title a{font-weight:600;color:var(--navy);text-decoration:none}
-  td.title a:hover{text-decoration:underline;text-decoration-color:var(--gold)}
+  td.title a{font-weight:600;color:var(--ink);text-decoration:none}
+  td.title a:hover{color:var(--gold-soft);text-decoration:underline;text-decoration-color:var(--gold)}
   td.agency{color:var(--muted);font-size:12px;max-width:230px}
   .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;
     background:rgba(255,255,255,.08);color:var(--muted);white-space:nowrap}
@@ -95,6 +116,12 @@
   .empty .big{font-family:"Archivo";font-size:16px;color:var(--ink);margin-bottom:6px}
   .loading{padding:40px;text-align:center;color:var(--muted);font-size:14px}
   .foot{margin-top:14px;font-size:11px;color:var(--muted);text-align:center}
+  @media(max-width:720px){
+    .wrap{padding:14px}
+    .toolbar>*{flex-basis:100%}
+    .count{margin-left:0}
+    .selected-naics-bar{align-items:flex-start;flex-wrap:wrap}
+  }
 </style>
 </head>
 <body>
@@ -131,7 +158,12 @@
   <div class="wrap">
     <div class="toolbar">
       <input type="search" id="q" placeholder="Search title or agency…" />
-      <select id="fNaics"><option value="">All NAICS</option></select>
+      <div class="multi-filter" id="naicsFilter">
+        <button type="button" class="multi-toggle" id="naicsToggle" aria-expanded="false" aria-controls="naicsMenu">All NAICS</button>
+        <div class="multi-menu" id="naicsMenu" hidden>
+          <div id="naicsOptions"></div>
+        </div>
+      </div>
       <select id="fType"><option value="">All notice types</option></select>
       <select id="fSetaside"><option value="">All set-asides</option></select>
       <select id="fDue">
@@ -142,6 +174,11 @@
         <option value="open">Has a deadline</option>
       </select>
       <div class="count"><b id="num">0</b> opportunities</div>
+    </div>
+    <div class="selected-naics-bar" id="selectedNaicsBar" hidden>
+      <span class="selected-naics-label">Selected NAICS</span>
+      <div class="selected-naics-chips" id="selectedNaicsChips"></div>
+      <button type="button" class="clear-naics" id="clearNaics">Clear all</button>
     </div>
 
     <div class="panel">
@@ -183,6 +220,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const $ = (id) => document.getElementById(id);
 let ALL = [], sortKey = "posted_date", sortDir = -1;
+const SELECTED_NAICS = new Set();
 
 /* ---------- Auth ---------- */
 async function refreshAuth(){
@@ -227,9 +265,33 @@ async function load(){
 
 function uniq(key){ return [...new Set(ALL.map(o=>o[key]).filter(Boolean))].sort(); }
 function buildFilters(){
-  fill($("fNaics"), uniq("naics_code"), "All NAICS");
+  buildNaicsOptions(uniq("naics_code"));
   fill($("fType"), uniq("notice_type"), "All notice types");
   fill($("fSetaside"), uniq("set_aside"), "All set-asides");
+}
+function buildNaicsOptions(vals){
+  const available = new Set(vals.map(String));
+  [...SELECTED_NAICS].forEach(code=>{ if(!available.has(code)) SELECTED_NAICS.delete(code); });
+  $("naicsOptions").innerHTML = vals.map(v=>{
+    const code=String(v), checked=SELECTED_NAICS.has(code)?" checked":"";
+    return `<label class="naics-option"><input type="checkbox" value="${esc(code)}"${checked}><span>${esc(code)}</span></label>`;
+  }).join("") || `<div class="naics-option">No NAICS codes available</div>`;
+  $("naicsOptions").querySelectorAll("input").forEach(input=>{
+    input.addEventListener("change",()=>{
+      if(input.checked) SELECTED_NAICS.add(input.value); else SELECTED_NAICS.delete(input.value);
+      syncNaicsUI(); render();
+    });
+  });
+  syncNaicsUI();
+}
+function syncNaicsUI(){
+  const codes=[...SELECTED_NAICS].sort();
+  $("naicsToggle").textContent = codes.length ? `${codes.length} NAICS selected` : "All NAICS";
+  $("selectedNaicsBar").hidden = codes.length===0;
+  $("selectedNaicsChips").innerHTML = codes.map(code=>
+    `<span class="naics-chip">${esc(code)}<button type="button" data-naics="${esc(code)}" aria-label="Remove NAICS ${esc(code)}">×</button></span>`
+  ).join("");
+  $("naicsOptions").querySelectorAll("input").forEach(input=>{ input.checked=SELECTED_NAICS.has(input.value); });
 }
 function fill(sel, vals, allLabel){
   const cur = sel.value;
@@ -256,10 +318,10 @@ function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").
 /* ---------- Filtering + render ---------- */
 function filtered(){
   const q = $("q").value.trim().toLowerCase();
-  const n = $("fNaics").value, t = $("fType").value, sa = $("fSetaside").value, due = $("fDue").value;
+  const t = $("fType").value, sa = $("fSetaside").value, due = $("fDue").value;
   return ALL.filter(o=>{
     if(q && !(`${o.title||""} ${o.agency||""}`.toLowerCase().includes(q))) return false;
-    if(n && o.naics_code!==n) return false;
+    if(SELECTED_NAICS.size && !SELECTED_NAICS.has(String(o.naics_code||""))) return false;
     if(t && o.notice_type!==t) return false;
     if(sa && o.set_aside!==sa) return false;
     if(due){
@@ -300,8 +362,23 @@ function render(){
 }
 
 /* ---------- Wire controls ---------- */
-["q","fNaics","fType","fSetaside","fDue"].forEach(id=>{
+["q","fType","fSetaside","fDue"].forEach(id=>{
   $(id).addEventListener("input", render);
+});
+$("naicsToggle").addEventListener("click",()=>{
+  const menu=$("naicsMenu"), willOpen=menu.hidden;
+  menu.hidden=!willOpen; $("naicsToggle").setAttribute("aria-expanded",String(willOpen));
+});
+$("selectedNaicsChips").addEventListener("click",e=>{
+  const button=e.target.closest("button[data-naics]"); if(!button) return;
+  SELECTED_NAICS.delete(button.dataset.naics); syncNaicsUI(); render();
+});
+$("clearNaics").addEventListener("click",()=>{ SELECTED_NAICS.clear(); syncNaicsUI(); render(); });
+document.addEventListener("click",e=>{
+  if(!$("naicsFilter").contains(e.target)){ $("naicsMenu").hidden=true; $("naicsToggle").setAttribute("aria-expanded","false"); }
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ $("naicsMenu").hidden=true; $("naicsToggle").setAttribute("aria-expanded","false"); $("naicsToggle").focus(); }
 });
 document.querySelectorAll("thead th").forEach(th=>{
   th.addEventListener("click", ()=>{
