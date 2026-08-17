@@ -158,6 +158,10 @@
   <div class="wrap">
     <div class="toolbar">
       <input type="search" id="q" placeholder="Search title or agency…" />
+      <select id="naicsPreset" aria-label="NAICS search profile">
+        <option value="">Custom NAICS</option>
+        <option value="apropos">Apropos Group LLC</option>
+      </select>
       <div class="multi-filter" id="naicsFilter">
         <button type="button" class="multi-toggle" id="naicsToggle" aria-expanded="false" aria-controls="naicsMenu">All NAICS</button>
         <div class="multi-menu" id="naicsMenu" hidden>
@@ -219,8 +223,11 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const $ = (id) => document.getElementById(id);
-let ALL = [], sortKey = "posted_date", sortDir = -1;
+let ALL = [], NAICS_CATALOG = [], sortKey = "posted_date", sortDir = -1;
 const SELECTED_NAICS = new Set();
+const APROPOS_GROUP_NAICS = Object.freeze([
+  "541511", "541512", "541519", "541611", "541614", "541618",
+]);
 
 /* ---------- Auth ---------- */
 async function refreshAuth(){
@@ -254,27 +261,37 @@ function showApp(email){
 /* ---------- Data ---------- */
 async function load(){
   $("loading").style.display="block"; $("empty").style.display="none"; $("rows").innerHTML="";
+  const catalogRequest = fetch("/naics-2022.json").then(async response=>{
+    if(!response.ok) throw new Error(`NAICS catalog ${response.status}`);
+    return response.json();
+  });
   const { data, error } = await sb.from("sam_opportunities")
     .select("*").order("posted_date",{ascending:false}).limit(500);
   $("loading").style.display="none";
   if(error){ $("empty").style.display="block"; $("empty").querySelector(".big").textContent="Couldn't load data"; 
     $("empty").querySelector("div:last-child").textContent=error.message; return; }
   ALL = data || [];
+  try { NAICS_CATALOG = await catalogRequest; }
+  catch(error) {
+    console.warn("[naics-catalog]",error);
+    NAICS_CATALOG = uniq("naics_code").map(code=>({code:String(code),title:""}));
+  }
   buildFilters(); render();
 }
 
 function uniq(key){ return [...new Set(ALL.map(o=>o[key]).filter(Boolean))].sort(); }
 function buildFilters(){
-  buildNaicsOptions(uniq("naics_code"));
+  buildNaicsOptions(NAICS_CATALOG);
   fill($("fType"), uniq("notice_type"), "All notice types");
   fill($("fSetaside"), uniq("set_aside"), "All set-asides");
 }
 function buildNaicsOptions(vals){
-  const available = new Set(vals.map(String));
+  const available = new Set(vals.map(item=>String(item.code)));
   [...SELECTED_NAICS].forEach(code=>{ if(!available.has(code)) SELECTED_NAICS.delete(code); });
-  $("naicsOptions").innerHTML = vals.map(v=>{
-    const code=String(v), checked=SELECTED_NAICS.has(code)?" checked":"";
-    return `<label class="naics-option"><input type="checkbox" value="${esc(code)}"${checked}><span>${esc(code)}</span></label>`;
+  $("naicsOptions").innerHTML = vals.map(item=>{
+    const code=String(item.code), checked=SELECTED_NAICS.has(code)?" checked":"";
+    const label=item.title ? `${code} · ${item.title}` : code;
+    return `<label class="naics-option"><input type="checkbox" value="${esc(code)}"${checked}><span>${esc(label)}</span></label>`;
   }).join("") || `<div class="naics-option">No NAICS codes available</div>`;
   $("naicsOptions").querySelectorAll("input").forEach(input=>{
     input.addEventListener("change",()=>{
@@ -364,6 +381,15 @@ function render(){
 /* ---------- Wire controls ---------- */
 ["q","fType","fSetaside","fDue"].forEach(id=>{
   $(id).addEventListener("input", render);
+});
+$("naicsPreset").addEventListener("change",()=>{
+  if($("naicsPreset").value==="apropos"){
+    SELECTED_NAICS.clear();
+    APROPOS_GROUP_NAICS.forEach(code=>SELECTED_NAICS.add(code));
+  } else {
+    SELECTED_NAICS.clear();
+  }
+  syncNaicsUI(); render();
 });
 $("naicsToggle").addEventListener("click",()=>{
   const menu=$("naicsMenu"), willOpen=menu.hidden;
