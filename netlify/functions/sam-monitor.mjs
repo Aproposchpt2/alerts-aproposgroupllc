@@ -14,8 +14,9 @@ const APROPOS_GROUP_NAICS = Object.freeze([
   "541511", "541512", "541519", "541611", "541614", "541618",
 ]);
 
-// Named search profile: Apropos Group LLC. Override via env when needed.
-const NAICS_CODES = (process.env.NAICS_CODES || APROPOS_GROUP_NAICS.join(","))
+// Named search profile: Apropos Group LLC. A dedicated override avoids inheriting
+// the retired generic NAICS_CODES value from an older Netlify configuration.
+const NAICS_CODES = (process.env.APROPOS_GROUP_NAICS_CODES || APROPOS_GROUP_NAICS.join(","))
   .split(",").map((s) => s.trim()).filter(Boolean);
 
 // How many days back to scan each run. 2 covers weekends / a missed run.
