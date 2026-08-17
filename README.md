@@ -6,7 +6,7 @@ Two layers of coverage for federal contract opportunities under your NAICS codes
 - **Layer 2 (automated):** a Netlify scheduled function that pulls the SAM.gov API
   daily, dedupes into Supabase, and emails you a digest via Resend.
 
-NAICS watched by default: **541512, 541519, 541511, 518210, 561421, 561499**
+Named search profile **Apropos Group LLC** watches: **541511, 541512, 541519, 541611, 541614, 541618**
 
 ---
 
@@ -82,7 +82,7 @@ deadline) turns this into a live pipeline board — a clean addition for Ruflo o
 
 ## Layer 3 — Private pipeline dashboard (`dashboard/index.html`)
 
-A login-gated, read-only web view over the same Supabase table: search + filter by NAICS,
+A login-gated, read-only web view over the same Supabase table: search + filter using the complete official 2022 six-digit NAICS catalog or the named **Apropos Group LLC** profile,
 notice type, set-aside, and response deadline, with color-coded urgency and direct links to
 each live SAM.gov notice. Single static file — no build step.
 
