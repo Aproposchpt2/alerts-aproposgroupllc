@@ -58,8 +58,8 @@ rate limit.
    the logs (it returns `ok: N new`) and your inbox.
 
 ### Tuning
-- Change which codes are watched or how far back it scans via `NAICS_CODES` /
-  `LOOKBACK_DAYS` env vars — no code change needed.
+- Change the named profile codes or scan depth via `APROPOS_GROUP_NAICS_CODES` /
+  `LOOKBACK_DAYS` environment variables — no code change needed.
 - Change timing by editing the cron in `export const config = { schedule: "0 13 * * *" }`.
 - Want only set-asides? Add `url.searchParams.set("typeOfSetAside", "SBA")` (etc.) in
   `fetchOppsForNaics`, or filter `notice_type` before emailing.
