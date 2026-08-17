@@ -9,11 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#0A1A3A; --navy-2:#13284f; --ink:#1a2332; --muted:#5a687f;
-    --line:#e4e9f2; --bg:#f4f6fb; --card:#ffffff;
-    --gold:#b5762a; --gold-soft:#d9a45b;
-    --ok:#1d7a4d; --warn:#b5762a; --hot:#c0392b;
-    --shadow:0 1px 2px rgba(10,26,58,.06),0 8px 24px rgba(10,26,58,.06);
+    --navy:#071426; --navy-2:#0d2038; --ink:#f5f7fa; --muted:#aab5c4;
+    --line:rgba(200,155,60,.36); --bg:#071426; --card:#0d2038;
+    --gold:#c89b3c; --gold-soft:#e2b857;
+    --ok:#25a78e; --warn:#d89a32; --hot:#ff8f86;
+    --shadow:0 1px 2px rgba(2,8,20,.22),0 18px 44px rgba(2,8,20,.34);
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:"IBM Plex Sans",sans-serif;background:var(--bg);color:var(--ink);
@@ -23,11 +23,11 @@
 
   /* ---------- Login ---------- */
   #login{min-height:100vh;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(120% 120% at 80% -10%,#16305f 0%,var(--navy) 55%,#06122b 100%)}
+    background:radial-gradient(120% 120% at 80% -10%,#0d2038 0%,var(--navy) 55%,#040b14 100%)}
   .login-card{width:min(400px,92vw);background:var(--card);border-radius:14px;padding:34px 30px;
-    box-shadow:0 30px 80px rgba(0,0,0,.4)}
+    box-shadow:0 30px 80px rgba(0,0,0,.48);border:1px solid var(--line)}
   .logo{display:flex;align-items:center;gap:11px;margin-bottom:22px}
-  .logo .mk{width:42px;height:42px;border-radius:8px;background:var(--navy);color:#fff;
+  .logo .mk{width:42px;height:42px;border-radius:8px;background:var(--gold);color:var(--navy);
     display:flex;align-items:center;justify-content:center;font-family:"Archivo";font-weight:800;letter-spacing:.5px}
   .logo h1{font-family:"Archivo";font-size:18px;color:var(--navy);letter-spacing:-.2px}
   .logo .sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:600}
@@ -36,33 +36,33 @@
   input[type=email]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:9px;
     font-family:inherit;font-size:14px;outline:none;transition:border .15s}
   input[type=email]:focus{border-color:var(--gold)}
-  .btn{width:100%;margin-top:12px;padding:12px;border:none;border-radius:9px;background:var(--navy);
-    color:#fff;font-family:"Archivo";font-weight:700;font-size:14px;letter-spacing:.2px;cursor:pointer;
+  .btn{width:100%;margin-top:12px;padding:12px;border:none;border-radius:9px;background:var(--gold);
+    color:var(--navy);font-family:"Archivo";font-weight:700;font-size:14px;letter-spacing:.2px;cursor:pointer;
     transition:transform .08s,background .15s}
-  .btn:hover{background:var(--navy-2)} .btn:active{transform:translateY(1px)}
+  .btn:hover{background:var(--gold-soft)} .btn:active{transform:translateY(1px)}
   .btn[disabled]{opacity:.6;cursor:default}
   .note{margin-top:14px;font-size:12px;color:var(--muted);text-align:center;min-height:16px}
   .note.ok{color:var(--ok)} .note.err{color:var(--hot)}
 
   /* ---------- App shell ---------- */
   #app{display:none}
-  header.bar{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;
+  header.bar{position:sticky;top:0;z-index:20;background:var(--navy);color:var(--ink);border-bottom:1px solid var(--line);
     padding:13px 22px;display:flex;align-items:center;gap:16px;box-shadow:0 2px 16px rgba(10,26,58,.25)}
-  header .mk{width:34px;height:34px;border-radius:7px;background:#fff;color:var(--navy);
+  header .mk{width:34px;height:34px;border-radius:7px;background:var(--gold);color:var(--navy);
     display:flex;align-items:center;justify-content:center;font-family:"Archivo";font-weight:800;font-size:14px}
   header .title{font-family:"Archivo";font-weight:700;font-size:15px;letter-spacing:.2px}
   header .title span{color:var(--gold-soft)}
   header .spacer{flex:1}
-  header .who{font-size:12px;color:#c5d0e6}
-  .ghost{background:transparent;border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:7px;
+  header .who{font-size:12px;color:var(--muted)}
+  .ghost{background:transparent;border:1px solid rgba(200,155,60,.5);color:var(--ink);border-radius:7px;
     padding:7px 12px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s}
-  .ghost:hover{background:rgba(255,255,255,.12)}
+  .ghost:hover{background:rgba(200,155,60,.12);color:var(--gold-soft)}
 
   .wrap{max-width:1240px;margin:0 auto;padding:22px}
 
   .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
   .toolbar input[type=search],.toolbar select{padding:9px 11px;border:1px solid var(--line);
-    border-radius:8px;font-family:inherit;font-size:13px;background:var(--card);outline:none}
+    border-radius:8px;font-family:inherit;font-size:13px;background:var(--card);color:var(--ink);outline:none}
   .toolbar input[type=search]{flex:1;min-width:200px}
   .toolbar input[type=search]:focus,.toolbar select:focus{border-color:var(--gold)}
   .count{margin-left:auto;font-size:13px;color:var(--muted)}
@@ -70,31 +70,31 @@
 
   .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
   table{width:100%;border-collapse:collapse}
-  thead th{background:#f7f9fd;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;
+  thead th{background:rgba(200,155,60,.08);text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;
     color:var(--muted);font-weight:700;padding:11px 14px;border-bottom:1px solid var(--line);
     cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:60px}
   thead th:hover{color:var(--navy)}
   thead th .ar{color:var(--gold);font-size:10px}
-  tbody tr{border-bottom:1px solid #eef2f8;opacity:0;animation:rise .4s ease forwards}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.08);opacity:0;animation:rise .4s ease forwards}
   @keyframes rise{to{opacity:1;transform:none}from{transform:translateY(6px)}}
-  tbody tr:hover{background:#fafbfe}
+  tbody tr:hover{background:rgba(200,155,60,.06)}
   td{padding:12px 14px;font-size:13px;vertical-align:top}
   td.title a{font-weight:600;color:var(--navy);text-decoration:none}
   td.title a:hover{text-decoration:underline;text-decoration-color:var(--gold)}
-  td.agency{color:#42506a;font-size:12px;max-width:230px}
+  td.agency{color:var(--muted);font-size:12px;max-width:230px}
   .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;
-    background:#eef2f8;color:#42506a;white-space:nowrap}
-  .tag.code{font-family:"IBM Plex Mono";background:#eaf0fb;color:var(--navy)}
-  .tag.sa{background:#fbf2e6;color:var(--gold)}
+    background:rgba(255,255,255,.08);color:var(--muted);white-space:nowrap}
+  .tag.code{font-family:"IBM Plex Mono";background:rgba(200,155,60,.12);color:var(--gold-soft)}
+  .tag.sa{background:rgba(200,155,60,.14);color:var(--gold-soft)}
   .pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
-  .pill.none{background:#eef2f8;color:#8a94a8}
-  .pill.ok{background:#e6f4ec;color:var(--ok)}
-  .pill.warn{background:#fbf2e6;color:var(--warn)}
-  .pill.hot{background:#fbe9e7;color:var(--hot)}
+  .pill.none{background:rgba(255,255,255,.08);color:var(--muted)}
+  .pill.ok{background:rgba(37,167,142,.14);color:var(--ok)}
+  .pill.warn{background:rgba(216,154,50,.14);color:var(--warn)}
+  .pill.hot{background:rgba(255,143,134,.14);color:var(--hot)}
   .empty{padding:54px 20px;text-align:center;color:var(--muted)}
   .empty .big{font-family:"Archivo";font-size:16px;color:var(--ink);margin-bottom:6px}
   .loading{padding:40px;text-align:center;color:var(--muted);font-size:14px}
-  .foot{margin-top:14px;font-size:11px;color:#94a0b6;text-align:center}
+  .foot{margin-top:14px;font-size:11px;color:var(--muted);text-align:center}
 </style>
 </head>
 <body>
@@ -293,7 +293,7 @@ function render(){
       <td><span class="tag">${esc(o.notice_type||"—")}</span></td>
       <td><span class="tag code">${esc(o.naics_code||"—")}</span></td>
       <td>${o.set_aside?`<span class="tag sa">${esc(o.set_aside)}</span>`:`<span class="tag">Unrestricted</span>`}</td>
-      <td class="mono" style="font-size:12px;color:#5a687f">${posted}</td>
+      <td class="mono" style="font-size:12px;color:var(--muted)">${posted}</td>
       <td>${duePill(o.response_deadline)}</td>
     </tr>`;
   }).join("");
