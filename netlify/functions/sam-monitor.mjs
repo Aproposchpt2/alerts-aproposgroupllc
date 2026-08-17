@@ -1,3 +1,5 @@
+import { searchSamProfile } from "./lib/sam-gov-opportunities.mjs";
+
 // ============================================================================
 //  Apropos Group LLC — SAM.gov Opportunity Monitor
 //  Netlify Scheduled Function (runs daily)
@@ -8,11 +10,12 @@
 //  All secrets are read from Netlify environment variables. Never commit them.
 // ============================================================================
 
-const SAM_SEARCH_URL = "https://api.sam.gov/opportunities/v2/search";
+const APROPOS_GROUP_NAICS = Object.freeze([
+  "541511", "541512", "541519", "541611", "541614", "541618",
+]);
 
-// Target NAICS codes (override via env NAICS_CODES, comma-separated)
-const NAICS_CODES = (process.env.NAICS_CODES ||
-  "541512,541519,541511,518210,561421,561499")
+// Named search profile: Apropos Group LLC. Override via env when needed.
+const NAICS_CODES = (process.env.NAICS_CODES || APROPOS_GROUP_NAICS.join(","))
   .split(",").map((s) => s.trim()).filter(Boolean);
 
 // How many days back to scan each run. 2 covers weekends / a missed run.
@@ -59,36 +62,8 @@ function toRow(o) {
 }
 
 // ---------------------------------------------------------------------------
-// SAM.gov — one call per NAICS code, paginated if needed
+// SAM.gov requests are centralized in lib/sam-gov-opportunities.mjs.
 // ---------------------------------------------------------------------------
-
-async function fetchOppsForNaics(naics, postedFrom, postedTo) {
-  const out = [];
-  let offset = 0;
-  while (true) {
-    const url = new URL(SAM_SEARCH_URL);
-    url.searchParams.set("api_key", process.env.SAM_API_KEY);
-    url.searchParams.set("postedFrom", postedFrom);
-    url.searchParams.set("postedTo", postedTo);
-    url.searchParams.set("ncode", naics);
-    url.searchParams.set("limit", String(PAGE_LIMIT));
-    url.searchParams.set("offset", String(offset));
-
-    const res = await fetch(url, { headers: { Accept: "application/json" } });
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`SAM ${res.status} (NAICS ${naics}): ${body.slice(0, 300)}`);
-    }
-    const data = await res.json();
-    const batch = data.opportunitiesData || [];
-    out.push(...batch);
-
-    const total = data.totalRecords || 0;
-    offset += batch.length;
-    if (batch.length === 0 || offset >= total) break;
-  }
-  return out;
-}
 
 // ---------------------------------------------------------------------------
 // Supabase (PostgREST) — dedupe + insert via service-role key
@@ -213,18 +188,25 @@ export default async () => {
   const postedFrom = mmddyyyy(fromDate);
   const postedTo = mmddyyyy(now);
 
-  // 1) Gather across NAICS codes, de-duplicating by noticeId within this run.
-  const seen = new Map();
-  for (const naics of NAICS_CODES) {
-    try {
-      for (const o of await fetchOppsForNaics(naics, postedFrom, postedTo)) {
-        if (o.noticeId) seen.set(o.noticeId, o);
-      }
-    } catch (e) {
-      console.error(e.message); // one bad NAICS shouldn't abort the run
-    }
+  // 1) Execute every NAICS path through the authoritative service and dedupe.
+  let search;
+  try {
+    search = await searchSamProfile({
+      apiKey: process.env.SAM_API_KEY,
+      naicsCodes: NAICS_CODES,
+      postedFrom,
+      postedTo,
+      limit: PAGE_LIMIT,
+      concurrency: 4,
+    });
+  } catch (error) {
+    console.error("Apropos Group LLC SAM.gov search failed:", error.message);
+    return new Response(`SAM.gov search failed: ${error.message}`, { status: 502 });
   }
-  const fetched = [...seen.values()];
+  if (search.searchStatus === "PARTIAL_SUCCESS") {
+    console.warn("Apropos Group LLC search completed with partial results.", search.execution);
+  }
+  const fetched = search.rows;
   if (fetched.length === 0) {
     console.log("No opportunities in window.");
     return new Response("ok: none fetched");
