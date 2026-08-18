@@ -58,7 +58,7 @@
     padding:7px 12px;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s}
   .ghost:hover{background:rgba(200,155,60,.12);color:var(--gold-soft)}
 
-  .wrap{max-width:1240px;margin:0 auto;padding:22px}
+  .wrap{max-width:1500px;margin:0 auto;padding:22px}
 
   .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:10px}
   .toolbar input[type=search],.toolbar select,.multi-toggle{padding:9px 11px;border:1px solid var(--line);
@@ -90,18 +90,18 @@
   .clear-naics{border:0;background:transparent;color:var(--gold-soft);font:600 12px "IBM Plex Sans";cursor:pointer;white-space:nowrap}
 
   .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:auto;box-shadow:var(--shadow);isolation:isolate}
-  table{width:100%;border-collapse:collapse}
+  table{width:100%;min-width:1280px;border-collapse:collapse;table-layout:auto}
   thead th{background:#10243d;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.6px;
     color:var(--muted);font-weight:700;padding:11px 14px;border-bottom:1px solid var(--line);
     cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:0;z-index:3}
   thead th:hover{color:var(--gold-soft)}
   thead th .ar{color:var(--gold);font-size:10px}
-  tbody tr{border-bottom:1px solid rgba(255,255,255,.08);opacity:0;animation:rise .4s ease forwards}
+  tbody tr{border-bottom:1px solid rgba(255,255,255,.08);opacity:0;animation:rise .4s ease forwards;cursor:pointer}
   @keyframes rise{to{opacity:1;transform:none}from{transform:translateY(6px)}}
   tbody tr:hover{background:rgba(200,155,60,.06)}
   td{padding:12px 14px;font-size:13px;vertical-align:top}
-  td.title a{font-weight:600;color:var(--ink);text-decoration:none}
-  td.title a:hover{color:var(--gold-soft);text-decoration:underline;text-decoration-color:var(--gold)}
+  .title-button{border:0;background:transparent;padding:0;color:var(--ink);font:600 13px/1.45 "IBM Plex Sans";text-align:left;cursor:pointer}
+  .title-button:hover{color:var(--gold-soft);text-decoration:underline;text-decoration-color:var(--gold)}
   td.agency{color:var(--muted);font-size:12px;max-width:230px}
   .tag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;
     background:rgba(255,255,255,.08);color:var(--muted);white-space:nowrap}
@@ -116,11 +116,40 @@
   .empty .big{font-family:"Archivo";font-size:16px;color:var(--ink);margin-bottom:6px}
   .loading{padding:40px;text-align:center;color:var(--muted);font-size:14px}
   .foot{margin-top:14px;font-size:11px;color:var(--muted);text-align:center}
+  .drawer-backdrop{position:fixed;inset:0;z-index:80;background:rgba(2,8,20,.7);backdrop-filter:blur(3px)}
+  .drawer-backdrop[hidden]{display:none}
+  .contract-drawer{position:absolute;top:0;right:0;width:min(980px,96vw);min-height:100%;background:#071426;border-left:1px solid var(--line);
+    box-shadow:-24px 0 70px rgba(0,0,0,.5);padding:24px;overflow:auto}
+  .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--line)}
+  .drawer-head h2{font-family:"Archivo";font-size:clamp(22px,3vw,34px);line-height:1.15;margin-top:8px}
+  .drawer-close{border:1px solid var(--line);background:transparent;color:var(--ink);border-radius:8px;width:38px;height:38px;font-size:22px;cursor:pointer}
+  .drawer-actions{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}
+  .drawer-action{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 16px;border-radius:8px;
+    border:1px solid var(--line);background:#0d2038;color:var(--ink);font-weight:700;text-decoration:none;cursor:pointer}
+  .drawer-action.primary{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+  .drawer-action:disabled{opacity:.55;cursor:not-allowed}
+  .drawer-status{min-height:20px;color:var(--muted);font-size:13px;margin-bottom:12px}
+  .drawer-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0}
+  .drawer-fact{padding:13px;border:1px solid rgba(200,155,60,.25);border-radius:9px;background:#0d2038}
+  .drawer-fact dt{color:var(--gold-soft);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .drawer-fact dd{margin:5px 0 0;color:var(--ink);font-size:13px;overflow-wrap:anywhere}
+  .drawer-section{margin-top:22px}
+  .drawer-section h3{font-family:"Archivo";font-size:16px;margin-bottom:10px;color:var(--gold-soft)}
+  .drawer-description{color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}
+  .document-list{display:grid;gap:8px}
+  .document-item{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:12px 14px;border:1px solid rgba(200,155,60,.25);
+    border-radius:9px;background:#0d2038}
+  .document-name{font-weight:600;overflow-wrap:anywhere}
+  .document-meta{font-size:11px;color:var(--muted);margin-top:3px}
+  .document-download{border:1px solid var(--line);background:transparent;color:var(--gold-soft);border-radius:7px;padding:8px 11px;font-weight:700;cursor:pointer}
+  body.drawer-open{overflow:hidden}
   @media(max-width:720px){
     .wrap{padding:14px}
     .toolbar>*{flex-basis:100%}
     .count{margin-left:0}
     .selected-naics-bar{align-items:flex-start;flex-wrap:wrap}
+    .drawer-grid{grid-template-columns:1fr}
+    .contract-drawer{width:100vw;padding:18px}
   }
 </style>
 </head>
@@ -210,8 +239,27 @@
   </div>
 </div>
 
+<div class="drawer-backdrop" id="drawerBackdrop" hidden>
+  <aside class="contract-drawer" id="contractDrawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="drawer-head">
+      <div><div class="selected-naics-label">SAM.gov opportunity</div><h2 id="drawerTitle">Contract details</h2></div>
+      <button type="button" class="drawer-close" id="drawerClose" aria-label="Close contract drawer">×</button>
+    </div>
+    <div class="drawer-actions">
+      <a class="drawer-action" id="drawerSamLink" target="_blank" rel="noopener">Open on SAM.gov ↗</a>
+      <button type="button" class="drawer-action primary" id="downloadAll">Download All Documents</button>
+    </div>
+    <div class="drawer-status" id="drawerStatus"></div>
+    <dl class="drawer-grid" id="drawerFacts"></dl>
+    <section class="drawer-section"><h3>Opportunity description</h3><div class="drawer-description" id="drawerDescription"></div></section>
+    <section class="drawer-section"><h3>Points of contact</h3><div class="drawer-description" id="drawerContacts"></div></section>
+    <section class="drawer-section"><h3>Contract documents</h3><div class="document-list" id="drawerDocuments"></div></section>
+  </aside>
+</div>
+
 <script type="module">
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import JSZip from "https://esm.sh/jszip@3.10.1";
 
 /* ================= CONFIG — fill these two in =================
    Both values are PUBLIC-SAFE (the anon key is designed for the browser;
@@ -223,7 +271,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const $ = (id) => document.getElementById(id);
-let ALL = [], NAICS_CATALOG = [], sortKey = "posted_date", sortDir = -1;
+let ALL = [], NAICS_CATALOG = [], ACTIVE_OPP = null, sortKey = "posted_date", sortDir = -1;
 const SELECTED_NAICS = new Set();
 const APROPOS_GROUP_NAICS = Object.freeze([
   "541511", "541512", "541519", "541611", "541614", "541618",
@@ -364,10 +412,9 @@ function render(){
   if(rows.length===0){ $("rows").innerHTML=""; $("empty").style.display="block"; return; }
   $("empty").style.display="none";
   $("rows").innerHTML = rows.map((o,i)=>{
-    const link = o.ui_link || `https://sam.gov/opp/${o.notice_id}/view`;
     const posted = o.posted_date ? esc(o.posted_date.slice(0,10)) : "—";
-    return `<tr style="animation-delay:${Math.min(i*18,360)}ms">
-      <td class="title"><a href="${esc(link)}" target="_blank" rel="noopener">${esc(o.title||"Untitled")}</a></td>
+    return `<tr data-notice="${esc(o.notice_id||"")}" style="animation-delay:${Math.min(i*18,360)}ms">
+      <td class="title"><button type="button" class="title-button">${esc(o.title||"Untitled")}</button></td>
       <td class="agency">${esc(o.agency||"—")}</td>
       <td><span class="tag">${esc(o.notice_type||"—")}</span></td>
       <td><span class="tag code">${esc(o.naics_code||"—")}</span></td>
@@ -377,6 +424,91 @@ function render(){
     </tr>`;
   }).join("");
 }
+
+/* ---------- Contract drawer ---------- */
+function rawOf(o){ return o?.raw && typeof o.raw==="object" ? o.raw : {}; }
+function resourceUrl(item){ return typeof item==="string" ? item : item?.url||item?.href||item?.resourceLink||""; }
+function resourceName(item,index){
+  if(item && typeof item==="object"){
+    const named=item.name||item.fileName||item.filename||item.title;
+    if(named) return String(named);
+  }
+  try{
+    const last=decodeURIComponent(new URL(resourceUrl(item)).pathname.split("/").filter(Boolean).pop()||"");
+    if(last) return last;
+  }catch{}
+  return `SAM document ${index+1}`;
+}
+function fact(label,value){return `<div class="drawer-fact"><dt>${esc(label)}</dt><dd>${esc(value||"—")}</dd></div>`;}
+function openDrawer(o){
+  ACTIVE_OPP=o; const raw=rawOf(o);
+  const place=raw.placeOfPerformance||raw.data?.placeOfPerformance||{};
+  const state=place.state?.name||place.state?.code||place.stateCode||"—";
+  const city=place.city?.name||place.city||"";
+  const location=[city,state,place.zip].filter(Boolean).join(", ");
+  const contacts=Array.isArray(raw.pointOfContact)?raw.pointOfContact:Array.isArray(raw.data?.pointOfContact)?raw.data.pointOfContact:[];
+  const resources=Array.isArray(raw.resourceLinks)?raw.resourceLinks:[];
+  $("drawerTitle").textContent=o.title||"Untitled opportunity";
+  $("drawerSamLink").href=o.ui_link||raw.uiLink||`https://sam.gov/opp/${encodeURIComponent(o.notice_id)}/view`;
+  $("drawerFacts").innerHTML=[
+    fact("Solicitation",o.solicitation_number||raw.solicitationNumber),
+    fact("Agency",o.agency||raw.fullParentPathName),
+    fact("Notice type",o.notice_type||raw.type),
+    fact("NAICS",o.naics_code||raw.naicsCode),
+    fact("Set-aside",o.set_aside||raw.typeOfSetAsideDescription||"Unrestricted"),
+    fact("Posted",o.posted_date||raw.postedDate),
+    fact("Response due",o.response_deadline||raw.responseDeadLine),
+    fact("Place of performance",location),
+    fact("Notice ID",o.notice_id||raw.noticeId),
+  ].join("");
+  const description=raw.description;
+  $("drawerDescription").textContent=description && !/^https?:\/\//i.test(description)
+    ? description : "The detailed description is contained in the official SAM.gov notice and attached documents.";
+  $("drawerContacts").innerHTML=contacts.length ? contacts.map(c=>
+    `<div class="drawer-fact" style="margin-bottom:8px"><strong>${esc(c.fullName||c.fullname||c.type||"Contact")}</strong><br>${esc(c.title||"")}${c.email?`<br><a href="mailto:${esc(c.email)}">${esc(c.email)}</a>`:""}${c.phone?`<br>${esc(c.phone)}`:""}</div>`
+  ).join("") : "No point-of-contact details were included in the stored SAM.gov record.";
+  $("drawerDocuments").innerHTML=resources.length ? resources.map((item,index)=>
+    `<div class="document-item"><div><div class="document-name">${esc(resourceName(item,index))}</div><div class="document-meta">Official SAM.gov document · File ${index+1} of ${resources.length}</div></div><button type="button" class="document-download" data-doc-index="${index}">Download</button></div>`
+  ).join("") : `<div class="drawer-description">No downloadable resource links were included in this SAM.gov record. Use “Open on SAM.gov” to review the live notice.</div>`;
+  $("downloadAll").disabled=resources.length===0;
+  $("drawerStatus").textContent=resources.length?`${resources.length} document${resources.length===1?"":"s"} available.`:"";
+  $("drawerBackdrop").hidden=false; document.body.classList.add("drawer-open"); $("drawerClose").focus();
+}
+function closeDrawer(){ $("drawerBackdrop").hidden=true; document.body.classList.remove("drawer-open"); ACTIVE_OPP=null; }
+async function documentBlob(index){
+  if(!ACTIVE_OPP) throw new Error("No contract selected.");
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session?.access_token) throw new Error("Your dashboard session has expired.");
+  const url=`/.netlify/functions/sam-document?notice_id=${encodeURIComponent(ACTIVE_OPP.notice_id)}&index=${index}`;
+  const response=await fetch(url,{headers:{Authorization:`Bearer ${session.access_token}`}});
+  if(!response.ok){const data=await response.json().catch(()=>({}));throw new Error(data.error||`Document request failed: ${response.status}`);}
+  return {blob:await response.blob(),filename:response.headers.get("X-Document-Filename")||`sam-document-${index+1}`};
+}
+function saveBlob(blob,filename){const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+$("rows").addEventListener("click",event=>{const row=event.target.closest("tr[data-notice]");if(!row)return;const opp=ALL.find(item=>String(item.notice_id)===row.dataset.notice);if(opp)openDrawer(opp);});
+$("drawerClose").addEventListener("click",closeDrawer);
+$("drawerBackdrop").addEventListener("click",event=>{if(event.target===$("drawerBackdrop"))closeDrawer();});
+$("drawerDocuments").addEventListener("click",async event=>{
+  const button=event.target.closest("button[data-doc-index]");if(!button)return;
+  button.disabled=true;$("drawerStatus").textContent="Preparing document…";
+  try{const file=await documentBlob(Number(button.dataset.docIndex));saveBlob(file.blob,file.filename);$("drawerStatus").textContent="Document download started.";}
+  catch(error){$("drawerStatus").textContent=error.message;}finally{button.disabled=false;}
+});
+$("downloadAll").addEventListener("click",async()=>{
+  if(!ACTIVE_OPP)return;const resources=Array.isArray(rawOf(ACTIVE_OPP).resourceLinks)?rawOf(ACTIVE_OPP).resourceLinks:[];
+  $("downloadAll").disabled=true;const zip=new JSZip();
+  try{
+    for(let index=0;index<resources.length;index++){
+      $("drawerStatus").textContent=`Downloading document ${index+1} of ${resources.length}…`;
+      const file=await documentBlob(index);zip.file(file.filename,file.blob);
+    }
+    $("drawerStatus").textContent="Building contract package…";
+    const blob=await zip.generateAsync({type:"blob",compression:"DEFLATE",compressionOptions:{level:6}});
+    const base=(ACTIVE_OPP.solicitation_number||ACTIVE_OPP.notice_id||"sam-contract").replace(/[^a-z0-9._-]+/gi,"-");
+    saveBlob(blob,`${base}-documents.zip`);$("drawerStatus").textContent="Complete contract package download started.";
+  }catch(error){$("drawerStatus").textContent=error.message;}finally{$("downloadAll").disabled=false;}
+});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&!$("drawerBackdrop").hidden)closeDrawer();});
 
 /* ---------- Wire controls ---------- */
 ["q","fType","fSetaside","fDue"].forEach(id=>{
