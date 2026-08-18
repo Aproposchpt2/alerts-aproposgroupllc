@@ -33,9 +33,12 @@
   .logo .sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:600}
   .login-card h2{font-family:"Archivo";font-size:15px;margin-bottom:5px}
   .login-card p{font-size:13px;color:var(--muted);margin-bottom:18px}
-  input[type=email]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:9px;
-    font-family:inherit;font-size:14px;outline:none;transition:border .15s}
-  input[type=email]:focus{border-color:var(--gold)}
+  input[type=email],input[inputmode=numeric]{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:9px;
+    background:#fff;color:#071426;font-family:inherit;font-size:14px;outline:none;transition:border .15s}
+  input[type=email]:focus,input[inputmode=numeric]:focus{border-color:var(--gold)}
+  input[inputmode=numeric]{font-family:"IBM Plex Mono",monospace;font-size:20px;font-weight:600;letter-spacing:.32em;text-align:center}
+  .otp-step[hidden]{display:none}
+  .text-btn{width:100%;margin-top:10px;border:0;background:transparent;color:var(--gold-soft);font:600 12px "IBM Plex Sans";cursor:pointer}
   .btn{width:100%;margin-top:12px;padding:12px;border:none;border-radius:9px;background:var(--gold);
     color:var(--navy);font-family:"Archivo";font-weight:700;font-size:14px;letter-spacing:.2px;cursor:pointer;
     transition:transform .08s,background .15s}
@@ -165,11 +168,20 @@
         <div class="sub">Opportunity Pipeline</div>
       </div>
     </div>
-    <h2>Sign in</h2>
-    <p>Enter your authorized email. We'll send a one-time sign-in link — no password.</p>
-    <input id="email" type="email" placeholder="you@aproposgroupllc.com" autocomplete="email" />
-    <button class="btn" id="sendLink">Send sign-in link</button>
-    <div class="note" id="loginNote"></div>
+    <div id="emailStep">
+      <h2>Sign in with a code</h2>
+      <p>Enter your authorized email. We’ll send a one-time verification code.</p>
+      <input id="email" type="email" placeholder="you@aproposgroupllc.com" autocomplete="email" />
+      <button class="btn" id="sendCode">Send verification code</button>
+    </div>
+    <div class="otp-step" id="otpStep" hidden>
+      <h2>Enter verification code</h2>
+      <p id="otpInstructions">Enter the code sent to your email.</p>
+      <input id="otp" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="8" placeholder="000000" autocomplete="one-time-code" aria-label="Email verification code" />
+      <button class="btn" id="verifyCode">Verify and sign in</button>
+      <button class="text-btn" id="changeEmail" type="button">Use a different email</button>
+    </div>
+    <div class="note" id="loginNote" role="status" aria-live="polite"></div>
   </div>
 </div>
 
@@ -285,16 +297,55 @@ async function refreshAuth(){
 }
 sb.auth.onAuthStateChange((_e, session)=>{ if(session) showApp(session.user.email); });
 
-$("sendLink").addEventListener("click", async ()=>{
+let pendingEmail = "";
+
+async function requestCode(){
   const email = $("email").value.trim();
   const note = $("loginNote");
   if(!email){ note.className="note err"; note.textContent="Enter your email."; return; }
-  $("sendLink").disabled = true;
+  $("sendCode").disabled = true;
+  note.className="note"; note.textContent="Sending verification code…";
   const { error } = await sb.auth.signInWithOtp({
-    email, options:{ emailRedirectTo: window.location.href }
+    email,
+    options:{ shouldCreateUser:false }
   });
-  if(error){ note.className="note err"; note.textContent=error.message; $("sendLink").disabled=false; }
-  else { note.className="note ok"; note.textContent="Check your inbox for the sign-in link."; }
+  $("sendCode").disabled = false;
+  if(error){ note.className="note err"; note.textContent=error.message; return; }
+  pendingEmail = email;
+  $("emailStep").hidden = true;
+  $("otpStep").hidden = false;
+  $("otpInstructions").textContent = `Enter the code sent to ${email}.`;
+  note.className="note ok"; note.textContent="Verification code sent.";
+  $("otp").focus();
+}
+
+async function verifyCode(){
+  const token = $("otp").value.replace(/\D/g,"");
+  const note = $("loginNote");
+  if(!pendingEmail){ note.className="note err"; note.textContent="Enter your email and request a new code."; return; }
+  if(token.length < 6){ note.className="note err"; note.textContent="Enter the complete verification code."; return; }
+  $("verifyCode").disabled = true;
+  note.className="note"; note.textContent="Verifying code…";
+  const { data, error } = await sb.auth.verifyOtp({
+    email:pendingEmail, token, type:"email"
+  });
+  if(error || !data.session){
+    note.className="note err";
+    note.textContent=error?.message || "The code could not be verified.";
+    $("verifyCode").disabled=false;
+    return;
+  }
+  showApp(data.user?.email || pendingEmail);
+}
+
+$("sendCode").addEventListener("click",requestCode);
+$("email").addEventListener("keydown",event=>{if(event.key==="Enter")requestCode();});
+$("verifyCode").addEventListener("click",verifyCode);
+$("otp").addEventListener("input",event=>{event.target.value=event.target.value.replace(/\D/g,"");});
+$("otp").addEventListener("keydown",event=>{if(event.key==="Enter")verifyCode();});
+$("changeEmail").addEventListener("click",()=>{
+  pendingEmail=""; $("otp").value=""; $("otpStep").hidden=true; $("emailStep").hidden=false;
+  $("loginNote").className="note"; $("loginNote").textContent=""; $("email").focus();
 });
 
 $("signout").addEventListener("click", async ()=>{ await sb.auth.signOut(); location.reload(); });
