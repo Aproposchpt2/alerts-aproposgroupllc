@@ -392,16 +392,29 @@ function showApp(email){
 // codes are selected (the normal case -- a preset or a custom pick), scope
 // the query itself with .in(), the same way SAM.gov's own API takes naics as
 // a real query parameter, instead of filtering a static slice client-side.
+//
+// A row-count limit alone isn't enough, either -- even NAICS-scoped, this
+// table can hold 1000+ historical rows, so a bare .limit() just moves the
+// same silent-truncation bug to an older cutoff (confirmed live: 1302 rows
+// matched the default 6-code scope, 302 past the old cap). Bound by whether
+// the opportunity is still actionable instead: an open deadline or a notice
+// that simply doesn't list one. Closed notices are never useful in a "what
+// can I still bid on" monitor, so excluding them isn't a truncation risk --
+// it's the correct scope, and it keeps the result set comfortably under any
+// reasonable limit as a backstop.
+function todayIso(){ return new Date().toISOString().slice(0,10); }
 async function load(){
   $("loading").style.display="block"; $("empty").style.display="none"; $("rows").innerHTML="";
   const catalogRequest = fetch("/naics-2022.json").then(async response=>{
     if(!response.ok) throw new Error(`NAICS catalog ${response.status}`);
     return response.json();
   });
-  let query = sb.from("sam_opportunities").select("*").order("posted_date",{ascending:false});
+  let query = sb.from("sam_opportunities").select("*")
+    .or(`response_deadline.gte.${todayIso()},response_deadline.is.null`)
+    .order("posted_date",{ascending:false});
   query = SELECTED_NAICS.size
-    ? query.in("naics_code",[...SELECTED_NAICS]).limit(1000)
-    : query.limit(500);
+    ? query.in("naics_code",[...SELECTED_NAICS]).limit(2000)
+    : query.limit(1000);
   const { data, error } = await query;
   $("loading").style.display="none";
   if(error){ $("empty").style.display="block"; $("empty").querySelector(".big").textContent="Couldn't load data"; 
