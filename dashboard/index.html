@@ -285,6 +285,7 @@ const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const $ = (id) => document.getElementById(id);
 let ALL = [], NAICS_CATALOG = [], ACTIVE_OPP = null, sortKey = "posted_date", sortDir = -1;
+let naicsInitialized = false;
 const SELECTED_NAICS = new Set();
 const APROPOS_GROUP_NAICS = Object.freeze([
   "541511", "541512", "541519", "541611", "541614", "541618",
@@ -372,18 +373,36 @@ function showApp(email){
   $("login").style.display="none";
   $("app").style.display="block";
   $("who").textContent = email;
+  // Default every session to the Apropos Group LLC NAICS scope. Only ever
+  // applied once per page load -- a later manual switch to Custom (or a
+  // friend's codes) is never overwritten by a subsequent auth refresh.
+  if(!naicsInitialized){
+    naicsInitialized = true;
+    APROPOS_GROUP_NAICS.forEach(code=>SELECTED_NAICS.add(code));
+    $("naicsPreset").value = "apropos";
+  }
   load();
 }
 
 /* ---------- Data ---------- */
+// `sam_opportunities` is a large SHARED table -- not exclusive to this site's
+// own NAICS-scoped daily monitor. An unfiltered "newest 500" pull can be
+// entirely crowded out by a single busy day of unrelated postings, silently
+// pushing yesterday's real matches out of the fetch window. Whenever NAICS
+// codes are selected (the normal case -- a preset or a custom pick), scope
+// the query itself with .in(), the same way SAM.gov's own API takes naics as
+// a real query parameter, instead of filtering a static slice client-side.
 async function load(){
   $("loading").style.display="block"; $("empty").style.display="none"; $("rows").innerHTML="";
   const catalogRequest = fetch("/naics-2022.json").then(async response=>{
     if(!response.ok) throw new Error(`NAICS catalog ${response.status}`);
     return response.json();
   });
-  const { data, error } = await sb.from("sam_opportunities")
-    .select("*").order("posted_date",{ascending:false}).limit(500);
+  let query = sb.from("sam_opportunities").select("*").order("posted_date",{ascending:false});
+  query = SELECTED_NAICS.size
+    ? query.in("naics_code",[...SELECTED_NAICS]).limit(1000)
+    : query.limit(500);
+  const { data, error } = await query;
   $("loading").style.display="none";
   if(error){ $("empty").style.display="block"; $("empty").querySelector(".big").textContent="Couldn't load data"; 
     $("empty").querySelector("div:last-child").textContent=error.message; return; }
@@ -413,7 +432,8 @@ function buildNaicsOptions(vals){
   $("naicsOptions").querySelectorAll("input").forEach(input=>{
     input.addEventListener("change",()=>{
       if(input.checked) SELECTED_NAICS.add(input.value); else SELECTED_NAICS.delete(input.value);
-      syncNaicsUI(); render();
+      $("naicsPreset").value = "";
+      syncNaicsUI(); load();
     });
   });
   syncNaicsUI();
@@ -590,7 +610,7 @@ $("naicsPreset").addEventListener("change",()=>{
   } else {
     SELECTED_NAICS.clear();
   }
-  syncNaicsUI(); render();
+  syncNaicsUI(); load();
 });
 $("naicsToggle").addEventListener("click",()=>{
   const menu=$("naicsMenu"), willOpen=menu.hidden;
@@ -598,9 +618,15 @@ $("naicsToggle").addEventListener("click",()=>{
 });
 $("selectedNaicsChips").addEventListener("click",e=>{
   const button=e.target.closest("button[data-naics]"); if(!button) return;
-  SELECTED_NAICS.delete(button.dataset.naics); syncNaicsUI(); render();
+  SELECTED_NAICS.delete(button.dataset.naics);
+  $("naicsPreset").value = "";
+  syncNaicsUI(); load();
 });
-$("clearNaics").addEventListener("click",()=>{ SELECTED_NAICS.clear(); syncNaicsUI(); render(); });
+$("clearNaics").addEventListener("click",()=>{
+  SELECTED_NAICS.clear();
+  $("naicsPreset").value = "";
+  syncNaicsUI(); load();
+});
 document.addEventListener("click",e=>{
   if(!$("naicsFilter").contains(e.target)){ $("naicsMenu").hidden=true; $("naicsToggle").setAttribute("aria-expanded","false"); }
 });
