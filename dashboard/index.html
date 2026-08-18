@@ -173,6 +173,7 @@
       <p>Enter your authorized email. We’ll send a one-time verification code.</p>
       <input id="email" type="email" placeholder="you@aproposgroupllc.com" autocomplete="email" />
       <button class="btn" id="sendCode">Send verification code</button>
+      <button class="text-btn" id="useExistingCode" type="button">I already have a verification code</button>
     </div>
     <div class="otp-step" id="otpStep" hidden>
       <h2>Enter verification code</h2>
@@ -299,6 +300,14 @@ sb.auth.onAuthStateChange((_e, session)=>{ if(session) showApp(session.user.emai
 
 let pendingEmail = "";
 
+function showOtpStep(email){
+  pendingEmail = email;
+  $("emailStep").hidden = true;
+  $("otpStep").hidden = false;
+  $("otpInstructions").textContent = `Enter the code sent to ${email}.`;
+  $("otp").focus();
+}
+
 async function requestCode(){
   const email = $("email").value.trim();
   const note = $("loginNote");
@@ -310,13 +319,17 @@ async function requestCode(){
     options:{ shouldCreateUser:false }
   });
   $("sendCode").disabled = false;
-  if(error){ note.className="note err"; note.textContent=error.message; return; }
-  pendingEmail = email;
-  $("emailStep").hidden = true;
-  $("otpStep").hidden = false;
-  $("otpInstructions").textContent = `Enter the code sent to ${email}.`;
+  if(error){
+    if(error.status===429 || error.code==="over_email_send_rate_limit" || /rate limit/i.test(error.message)){
+      showOtpStep(email);
+      note.className="note err";
+      note.textContent="Email limit reached. Enter the most recent code already sent to you, or try again after the hourly limit resets.";
+      return;
+    }
+    note.className="note err"; note.textContent=error.message; return;
+  }
+  showOtpStep(email);
   note.className="note ok"; note.textContent="Verification code sent.";
-  $("otp").focus();
 }
 
 async function verifyCode(){
@@ -339,6 +352,11 @@ async function verifyCode(){
 }
 
 $("sendCode").addEventListener("click",requestCode);
+$("useExistingCode").addEventListener("click",()=>{
+  const email=$("email").value.trim(), note=$("loginNote");
+  if(!email){note.className="note err";note.textContent="Enter the email address that received the code.";return;}
+  showOtpStep(email); note.className="note"; note.textContent="Enter the most recent verification code sent to this email.";
+});
 $("email").addEventListener("keydown",event=>{if(event.key==="Enter")requestCode();});
 $("verifyCode").addEventListener("click",verifyCode);
 $("otp").addEventListener("input",event=>{event.target.value=event.target.value.replace(/\D/g,"");});
